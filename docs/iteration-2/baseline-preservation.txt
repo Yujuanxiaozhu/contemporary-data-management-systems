@@ -1,0 +1,9 @@
+Original tests/test_system.py SHA256 unchanged: PASS
+Original tests/conftest.py SHA256 unchanged: PASS
+Original auth/core/main/model files unchanged: PASS
+Changed existing source/test files:
+app/routers/surveys.py
+app/schemas/survey.py
+app/services/surveys.py
+app/services/validation.py
+tests/smoke_startup.py

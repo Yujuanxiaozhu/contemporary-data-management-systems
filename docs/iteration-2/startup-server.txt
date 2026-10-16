@@ -1,0 +1,31 @@
+INFO:     Started server process [73392]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:61537 (Press CTRL+C to quit)
+INFO:     127.0.0.1:61538 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61538 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61538 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61538 - "GET /static/app.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61538 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61538 - "POST /api/auth/register HTTP/1.1" 201 Created
+INFO:     127.0.0.1:61538 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61538 - "POST /api/surveys HTTP/1.1" 201 Created
+INFO:     127.0.0.1:61538 - "POST /api/surveys/6ad106bd9be20203efff70fc/questions HTTP/1.1" 201 Created
+INFO:     127.0.0.1:61538 - "PUT /api/surveys/6ad106bd9be20203efff70fc HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61538 - "GET /api/surveys/6ad106bd9be20203efff70fc HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61538 - "POST /api/surveys/6ad106bd9be20203efff70fc/publish HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61538 - "PUT /api/surveys/6ad106bd9be20203efff70fc/questions/stable HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61538 - "DELETE /api/surveys/6ad106bd9be20203efff70fc/questions/stable HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61538 - "POST /api/surveys/6ad106bd9be20203efff70fc/questions HTTP/1.1" 201 Created
+INFO:     127.0.0.1:61538 - "POST /api/surveys/6ad106bd9be20203efff70fc/close HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61538 - "POST /api/surveys/6ad106bd9be20203efff70fc/questions HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:61538 - "GET /api/surveys/6ad106bd9be20203efff70fc HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61538 - "POST /api/surveys HTTP/1.1" 201 Created
+INFO:     127.0.0.1:61538 - "DELETE /api/surveys/6ad106bd9be20203efff70fd HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:61538 - "POST /api/surveys HTTP/1.1" 201 Created
+INFO:     127.0.0.1:61538 - "DELETE /api/surveys/6ad106bd9be20203efff70fe HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:61538 - "POST /api/surveys HTTP/1.1" 201 Created
+INFO:     127.0.0.1:61538 - "POST /api/surveys/6ad106be9be20203efff70ff/publish HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61538 - "POST /api/surveys/6ad106be9be20203efff70ff/close HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61538 - "POST /api/auth/logout HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:61538 - "GET /api/surveys HTTP/1.1" 401 Unauthorized

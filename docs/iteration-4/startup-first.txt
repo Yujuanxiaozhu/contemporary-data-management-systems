@@ -1,0 +1,58 @@
+GET /: 200
+GET /health: 200
+GET /static/app.js: 200
+GET /openapi.json: 200
+POST /api/auth/register: 201
+POST /api/auth/login: 200
+POST /api/surveys: 201
+GET /register: 200
+GET /login: 200
+GET /dashboard: 200
+GET /surveys/new: 200
+PUT /api/surveys/6ad11413514fbc2ac07fcff6: 200
+POST /api/surveys/6ad11413514fbc2ac07fcff6/questions: 201
+POST /api/surveys/6ad11413514fbc2ac07fcff6/questions: 201
+POST /api/surveys/6ad11413514fbc2ac07fcff6/questions: 201
+POST /api/surveys/6ad11413514fbc2ac07fcff6/questions: 201
+POST /api/surveys/6ad11413514fbc2ac07fcff6/jump-rules: 201
+POST /api/surveys/6ad11413514fbc2ac07fcff6/publish: 200
+GET /surveys/6ad11413514fbc2ac07fcff6/edit: 200
+GET /dashboard: 200
+GET /survey/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk: 200
+GET /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk: 200
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next: 200
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next: 200
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next: 200
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next: 200
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/responses: 201
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next: 200
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next: 200
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/responses: 201
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next: 200
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next: 200
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next: 200
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next: 200
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/responses: 201
+GET /api/surveys/6ad11413514fbc2ac07fcff6/stats: 200
+GET /surveys/6ad11413514fbc2ac07fcff6/stats: 200
+GET /api/surveys/6ad11413514fbc2ac07fcff6/questions/score/stats: 200
+PUT /api/surveys/6ad11413514fbc2ac07fcff6/questions/route: 200
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next: 200
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next: 200
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next: 200
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next: 200
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/responses: 201
+GET /api/surveys/6ad11413514fbc2ac07fcff6/stats: 200
+GET /api/surveys/6ad11413514fbc2ac07fcff6/questions/route/stats: 200
+MONGODB_RESPONSE_SNAPSHOT_AND_INDEX=PASS
+HAND_CALCULATED_EXPECTATIONS_MATCH=PASS {"old_version_responses": 3, "old_single_counts": [2, 1], "old_multiple_answered": 2, "old_multiple_total_selections": 3, "old_multiple_counts": [2, 1], "old_text_count": 2, "old_number_values": [10, 20, 30], "old_number_average": 20, "new_version_responses": 1, "new_number_average": 40, "total_responses": 4}
+POST /api/surveys/6ad11413514fbc2ac07fcff6/close: 200
+POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/responses: 409
+REAL_STATISTICS_AND_MANAGEMENT_SMOKE=PASS
+POST /api/surveys: 201
+POST /api/surveys/6ad11413514fbc2ac07fcffd/publish: 200
+POST /api/surveys/6ad11413514fbc2ac07fcffd/close: 200
+POST /api/auth/logout: 204
+GET /api/surveys: 401
+REAL_UVICORN_SMOKE=PASS
+Temporary server stopped; disposable test database removed.

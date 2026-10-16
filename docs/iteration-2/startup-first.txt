@@ -1,0 +1,29 @@
+GET /: 200
+GET /health: 200
+GET /static/app.js: 200
+GET /openapi.json: 200
+POST /api/auth/register: 201
+POST /api/auth/login: 200
+POST /api/surveys: 201
+POST /api/surveys/6ad106bd9be20203efff70fc/questions: 201
+PUT /api/surveys/6ad106bd9be20203efff70fc: 200
+GET /api/surveys/6ad106bd9be20203efff70fc: 200
+POST /api/surveys/6ad106bd9be20203efff70fc/publish: 200
+PUT /api/surveys/6ad106bd9be20203efff70fc/questions/stable: 200
+DELETE /api/surveys/6ad106bd9be20203efff70fc/questions/stable: 200
+POST /api/surveys/6ad106bd9be20203efff70fc/questions: 201
+POST /api/surveys/6ad106bd9be20203efff70fc/close: 200
+POST /api/surveys/6ad106bd9be20203efff70fc/questions: 409
+GET /api/surveys/6ad106bd9be20203efff70fc: 200
+POST /api/surveys: 201
+DELETE /api/surveys/6ad106bd9be20203efff70fd: 409
+POST /api/surveys: 201
+DELETE /api/surveys/6ad106bd9be20203efff70fe: 204
+REAL_QUESTION_API_SMOKE=PASS
+POST /api/surveys: 201
+POST /api/surveys/6ad106be9be20203efff70ff/publish: 200
+POST /api/surveys/6ad106be9be20203efff70ff/close: 200
+POST /api/auth/logout: 204
+GET /api/surveys: 401
+REAL_UVICORN_SMOKE=PASS
+Temporary server stopped; disposable test database removed.

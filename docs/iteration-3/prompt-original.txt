@@ -1,0 +1,1004 @@
+继续开发现有项目：
+
+D:\Codex\survey-system
+
+这是第三轮增量开发。
+
+第一轮和第二轮已经完成并通过验收。
+
+当前测试基线：
+
+220 passed
+
+包括：
+- 第一轮原有测试 70 项
+- 第二轮题目/API/并发测试 70 项
+- validation engine 测试 80 项
+
+严禁重建项目或推倒已有结构。
+
+实施前先完整只读检查：
+
+- 当前源码
+- tests
+- README
+- docs
+- MongoDB 索引
+- survey/question service
+- validation engine
+- schema_version 实现
+
+确认现状后在已有设计上继续。
+
+本轮核心目标：
+
+1. 保存不可变问卷 Schema 历史快照
+2. 实现 Jump Rule 数据模型与管理
+3. 实现 Jump Engine
+4. 实现公开问卷读取
+5. 实现最小可用公开填写页面
+6. 实现 Response 正式提交
+7. 落实匿名、截止时间和重复提交规则
+8. 保证历史版本 Response 可正确解释
+9. 补齐真实 MongoDB 和并发测试
+
+本轮不要实现统计模块。
+
+统计留到下一轮。
+
+==================================================
+一、历史 Schema：survey_versions
+==================================================
+
+新增 MongoDB collection：
+
+survey_versions
+
+建议结构：
+
+{
+    "_id": ObjectId,
+    "survey_id": ObjectId,
+    "schema_version": 12,
+    "questions": [...],
+    "jump_rules": [...],
+    "created_at": UTC datetime,
+    "created_reason": "publish | question_change | jump_rule_change"
+}
+
+要求：
+
+建立唯一复合索引：
+
+(survey_id, schema_version)
+
+survey_versions 中的记录必须视为 immutable。
+
+创建后不得修改历史 snapshot。
+
+当前 surveys collection 继续保存当前最新版数据。
+
+不要把所有历史版本无限嵌入 survey 主文档。
+
+==================================================
+二、Snapshot 创建策略
+==================================================
+
+draft 阶段：
+
+题目可以继续编辑。
+schema_version 保持现有第二轮行为继续递增。
+不要求每一次 draft 修改都创建 snapshot。
+
+首次：
+
+draft → published
+
+时：
+
+必须为当前 schema_version 创建 snapshot。
+
+只有成功保存 snapshot 后才能完成 publish。
+
+published 状态下：
+
+如果题目或 jump rule 被修改：
+
+- schema_version +1
+- 保存新版本完整 snapshot
+
+必须保证新版本 survey 不会处于：
+
+schema_version 已经更新
+但对应 snapshot 不存在
+
+的状态。
+
+不要默认 MongoDB standalone 支持 multi-document transaction。
+
+优先采用：
+- 唯一索引
+- optimistic concurrency
+- 明确写入顺序
+- 必要的失败补偿
+
+完成一致性保护。
+
+如果本机 MongoDB 实际配置支持 transaction，也不要让系统强依赖 replica set，除非确实必要并明确说明。
+
+snapshot 写入失败时，不能静默继续。
+
+==================================================
+三、历史版本读取
+==================================================
+
+提供 service：
+
+get_survey_version(survey_id, schema_version)
+
+要求：
+
+- published 过的版本可以读取。
+- 不存在的版本返回明确错误。
+- snapshot 不能被客户端修改。
+- response 后续通过 survey_id + schema_version 找到原始结构。
+
+公开问卷 API 返回当前：
+
+schema_version
+
+客户端提交时必须携带其实际加载的 schema_version。
+
+例如：
+
+{
+  "schema_version": 12,
+  "answers": ...
+}
+
+服务器提交时使用：
+
+survey_versions version 12
+
+进行验证和路径计算。
+
+不要直接使用当前 survey 最新 questions 来解释旧版本答卷。
+
+==================================================
+四、Jump Rule 数据模型
+==================================================
+
+jump_rules 继续嵌入 surveys。
+
+每条规则：
+
+{
+    "id": "r_xxx",
+    "source_question_id": "q1",
+    "operator": "equals",
+    "value": "...",
+    "target_question_id": "q5",
+    "priority": 1
+}
+
+rule id 为稳定字符串。
+
+如果用户没有指定合法 ID，由服务端生成。
+
+同一 survey 内 rule id 唯一。
+
+同一个 source question 的 priority 必须具有确定顺序。
+
+建议禁止同 source 下重复 priority，或提供明确稳定的 tie-break 规则。
+
+不要依赖 MongoDB 数组当前物理顺序决定执行优先级。
+
+==================================================
+五、允许的 Jump 条件
+==================================================
+
+single_choice：
+
+equals
+
+value 必须是 source question 中实际存在的 option id。
+
+multiple_choice：
+
+contains
+
+value 必须是 source question 中实际存在的 option id。
+
+number：
+
+equals
+greater_than
+greater_than_or_equal
+less_than
+less_than_or_equal
+
+value 必须是有限合法数字。
+
+禁止 bool、NaN、Infinity 和超出系统正常数字范围的异常值。
+
+text：
+
+本阶段不能作为 jump rule source。
+
+未知 operator 必须拒绝。
+
+operator 必须与 source question 类型匹配。
+
+==================================================
+六、Jump Rule Definition Validation
+==================================================
+
+新增统一业务校验，不要把逻辑散落在 router。
+
+至少检查：
+
+- source_question_id 是否存在
+- target_question_id 是否存在
+- source != target
+- source 类型是否支持跳转
+- operator 是否适用于 source type
+- rule value 是否适用于 operator
+- choice rule value 是否对应合法 option
+- priority 是否合法
+- rule id 是否重复
+
+本阶段只允许前向跳转：
+
+target_question.order > source_question.order
+
+如果 target 位于 source 前面或相同位置：
+
+拒绝规则。
+
+这样第一阶段问卷流程保持无环。
+
+Jump Engine 仍须保留 runtime visited/max-step 防护，不能单纯相信配置永远合法。
+
+==================================================
+七、Jump Rule API
+==================================================
+
+在现有 owner 权限模型基础上实现：
+
+POST
+/api/surveys/{survey_id}/jump-rules
+
+PUT
+/api/surveys/{survey_id}/jump-rules/{rule_id}
+
+DELETE
+/api/surveys/{survey_id}/jump-rules/{rule_id}
+
+要求：
+
+- 必须登录。
+- 只能修改自己的 survey。
+- draft 可以编辑。
+- published 可以编辑，并产生新 schema_version + snapshot。
+- closed 不允许编辑。
+- 非法 survey id 不产生 500。
+- 不存在 rule 返回明确错误。
+- 一次 API 操作最多 schema_version +1。
+
+published 状态修改 jump rule 后，新版本 snapshot 必须保存。
+
+==================================================
+八、Question 与 Jump Rule 引用完整性
+==================================================
+
+第三轮开始，question 修改必须考虑 jump rule。
+
+如果删除的 question：
+
+- 被作为 source
+或
+- 被作为 target
+
+则禁止删除。
+
+返回 HTTP 409。
+
+不要静默删除关联 rule。
+
+提示用户先删除相关 jump rule。
+
+如果修改：
+
+- question type
+- options
+- option id
+- number 类型等
+
+会导致现有 jump rule 不再合法：
+
+拒绝该 question 修改。
+
+不要自动删除 jump rule。
+
+仅修改 question title 等不会破坏规则的字段，应正常允许。
+
+确保失败操作：
+
+- question 不改变
+- schema_version 不增加
+- snapshot 不创建
+
+==================================================
+九、Jump Engine
+==================================================
+
+核心逻辑放入独立 service，例如：
+
+app/services/jump_engine.py
+
+不要放进 router。
+
+提供类似：
+
+resolve_next_question(
+    survey_definition,
+    current_question_id,
+    answer
+)
+
+规则：
+
+1. 取得 current question 对应 rules。
+2. 按 priority 确定顺序。
+3. 依次判断。
+4. 第一个匹配 rule 生效。
+5. 返回 target question。
+6. 如果无 rule 匹配，返回 order 下一题。
+7. 如果当前已经是最后一题，返回完成状态。
+
+同时提供完整路径验证能力，例如：
+
+build_response_path(...)
+或
+validate_response_path(...)
+
+实际命名可结合现有架构。
+
+必须能够根据：
+
+snapshot questions
+snapshot jump_rules
+answers
+
+从第一题推导出用户实际应该访问的问题序列。
+
+必须有 visited set 或最大步数保护。
+
+不允许死循环导致请求卡死。
+
+==================================================
+十、答案与路径一致性
+==================================================
+
+正式 response 提交必须同时验证：
+
+1. answer 本身合法
+2. 用户实际答案符合 Jump Engine 得出的路径
+
+假设：
+
+Q1 -> Q5
+
+则 Q2、Q3、Q4 为 skipped。
+
+对 skipped question：
+
+即使它们 required=true，也不能要求填写。
+
+同时禁止客户端额外提交 skipped question 的答案。
+
+否则统计会被污染。
+
+例如：
+
+实际路径：
+
+q1
+q5
+q6
+
+客户端 answers 包含：
+
+q1
+q2
+q5
+q6
+
+必须拒绝或明确剔除。
+
+优先选择拒绝，并返回清晰错误。
+
+对实际访问的问题：
+
+required=true 必须回答。
+
+optional 问题可以缺失。
+
+Jump Engine 根据实际有效 answer 判断下一题。
+
+==================================================
+十一、公开问卷读取
+==================================================
+
+实现公开访问。
+
+至少提供 API：
+
+GET
+/api/public/surveys/{public_token}
+
+返回当前可填写版本：
+
+- survey id 或必要公开标识
+- title
+- description
+- schema_version
+- questions
+- 必要 jump 信息或前端填写需要的信息
+
+但不要暴露：
+
+- owner 的敏感信息
+- password/session
+- 与填写无关的内部字段
+
+只有：
+
+status = published
+
+且未超过 deadline
+
+才能正常进入填写状态。
+
+closed：
+
+不可填写。
+
+deadline 已过：
+
+不可填写。
+
+不存在 token：
+
+返回 404。
+
+==================================================
+十二、公开填写页面
+==================================================
+
+实现最小可用：
+
+/survey/{public_token}
+
+Jinja2 + 原生 HTML/CSS/少量 JavaScript 即可。
+
+不要引入 React/Vue。
+
+要求：
+
+- 可以显示标题和说明
+- 可以显示四类题型
+- 可以按题回答
+- 能调用 Jump Engine/API 进入正确下一题
+- validation 错误能够显示
+- 最终可以提交
+
+页面不需要漂亮。
+
+功能正确优先。
+
+复杂问卷编辑器仍不要求本轮实现。
+
+==================================================
+十三、Response 正式数据模型
+==================================================
+
+responses 最终至少保存：
+
+{
+    "_id": ObjectId,
+    "survey_id": ObjectId,
+    "respondent_user_id": ObjectId | null,
+    "survey_schema_version": int,
+    "answers": [
+        {
+            "question_id": "...",
+            "value": ...
+        }
+    ],
+    "visited_question_ids": [...],
+    "submitted_at": UTC datetime,
+    "dedupe_key": optional string
+}
+
+如果现有 response model 结构略有不同，可合理兼容，不要为字段名字无意义地大规模重构。
+
+必须可以通过：
+
+survey_id
+survey_schema_version
+
+找到历史 snapshot。
+
+不要复制整份 survey schema 到每条 response，除非现有实现有强理由。
+
+==================================================
+十四、Response 提交 API
+==================================================
+
+实现：
+
+POST
+/api/public/surveys/{public_token}/responses
+
+或保持现有 API 风格中的合理等价路径。
+
+请求至少包含：
+
+schema_version
+answers
+
+完整行为：
+
+1. 查当前 survey。
+2. 检查 status。
+3. 检查 deadline。
+4. 检查匿名权限。
+5. 读取用户提交的 schema_version snapshot。
+6. 确认该 snapshot 属于当前 survey。
+7. 使用历史 snapshot 的 question definition 校验 answers。
+8. 使用历史 snapshot 的 jump_rules 重建实际路径。
+9. 验证 required。
+10. 验证没有 skipped/extraneous answers。
+11. 生成 response。
+12. 保存。
+13. 返回提交成功结果。
+
+重要：
+
+如果当前 survey 已经升级到 version 13，
+用户提交 version 12：
+
+只要：
+- version 12 snapshot 存在
+- survey 当前仍 published
+- deadline 未过
+- 其他提交策略允许
+
+则允许按照 version 12 提交。
+
+这用于支持用户打开问卷后，管理员修改问卷的情况。
+
+==================================================
+十五、匿名策略
+==================================================
+
+沿用之前确认的规则：
+
+allow_anonymous = false
+
+未登录：
+
+拒绝填写/提交。
+
+登录：
+
+允许。
+
+allow_anonymous = true
+
+未登录：
+
+允许，respondent_user_id = null。
+
+登录：
+
+允许，记录 respondent_user_id。
+
+不要声称系统能够可靠识别同一个匿名用户。
+
+匿名用户的重复提交无法通过身份精确限制。
+
+把这个限制写入文档。
+
+==================================================
+十六、重复提交
+==================================================
+
+登录用户：
+
+allow_multiple_submissions = true
+
+允许同一用户多次 response。
+
+allow_multiple_submissions = false
+
+同一用户只能成功提交一次。
+
+不能仅依赖：
+
+查询是否已有 response
+然后 insert
+
+因为存在并发竞态。
+
+为需要禁止重复提交的登录 response 生成：
+
+dedupe_key
+
+例如：
+
+survey:<survey_id>:user:<user_id>
+
+建立：
+
+unique sparse index
+
+或合理的 partial unique index。
+
+只有需要去重的 response 存 dedupe_key。
+
+并发双提交时：
+
+只能一个成功。
+
+另一个返回合理冲突，例如 409。
+
+匿名 response 不使用该身份 dedupe_key。
+
+==================================================
+十七、deadline
+==================================================
+
+deadline 统一按当前项目 UTC 策略处理。
+
+提交时服务器必须重新检查 deadline。
+
+不能只在加载页面时检查。
+
+如果：
+
+now > deadline
+
+拒绝提交。
+
+明确测试：
+
+- deadline 之前成功
+- deadline 已经过期失败
+- deadline 为空正常
+
+避免 naive datetime 与 aware datetime 混用。
+
+==================================================
+十八、Survey DELETE 策略调整
+==================================================
+
+第二轮已经发现：
+
+“先查询 responses，再删除 survey”
+
+存在提交/删除跨集合竞态。
+
+第三轮调整业务规则：
+
+只有 draft survey 可以物理 DELETE。
+
+published：
+
+禁止 DELETE。
+
+提示先关闭问卷。
+
+closed：
+
+禁止物理 DELETE。
+
+保留历史数据。
+
+正式 response 只能提交给 published survey。
+
+因此合法 response 与可物理 DELETE survey 在业务状态上互斥。
+
+请调整现有 DELETE 行为、测试和文档。
+
+如果历史测试依赖合理旧行为，需要更新对应测试并明确说明为什么业务规则发生变化。
+
+不要为了保持一个非课程核心 API 的旧行为而引入分布式锁或强制 MongoDB replica set。
+
+==================================================
+十九、测试要求
+==================================================
+
+第二轮基线 220 项。
+
+第三轮新增测试必须覆盖实际业务语义。
+
+至少覆盖以下类别。
+
+survey_versions：
+
+- publish 时生成 snapshot
+- snapshot version 正确
+- snapshot questions 正确
+- snapshot immutable
+- 同一 survey/version 唯一
+- published question 修改后产生新 snapshot
+- published jump rule 修改产生新 snapshot
+- snapshot 写入失败不会留下 survey 指向不存在版本
+- draft 修改不必生成无意义 snapshot
+
+jump rule definition：
+
+- 合法 single equals
+- 非法 single operator
+- option 不存在
+- 合法 multiple contains
+- 非法 multiple value
+- 合法 number comparison
+- number value bool 被拒绝
+- NaN/Infinity 被拒绝
+- text 作为 source 被拒绝
+- source 不存在
+- target 不存在
+- self jump 被拒绝
+- backward jump 被拒绝
+- duplicate rule id
+- priority 行为确定
+
+jump engine：
+
+- 无 rule 顺序前进
+- single 命中
+- single 未命中
+- multiple contains 命中
+- number >、>=、<、<=、equals
+- 多 rule 按 priority 选择第一个匹配
+- 最后一题结束
+- visited/max-step 防护
+
+引用完整性：
+
+- 被 rule 引用的 question 不可删除
+- 修改 question type 导致 rule 非法时拒绝
+- 删除 rule 后可删除 question
+- 失败修改不增加 schema_version
+
+public survey：
+
+- 正确 token
+- 非法 token
+- draft 不能填写
+- closed 不能填写
+- deadline 过期
+- published 正常
+- schema_version 正确
+
+response：
+
+- 普通顺序问卷提交
+- jump 后提交
+- skipped required 不要求填写
+- skipped answer 被拒绝
+- visited required 缺失
+- optional 缺失
+- single/multiple/text/number validation
+- 保存 survey_schema_version
+- visited path 保存正确
+- 历史 version response 提交成功
+- 不存在历史版本失败
+
+anonymous：
+
+- allow_anonymous=false 未登录失败
+- allow_anonymous=false 登录成功
+- allow_anonymous=true 匿名成功
+- 匿名 respondent_user_id=null
+
+multiple submissions：
+
+- allow_multiple=true 登录用户可多次
+- allow_multiple=false 第二次失败
+- 两个并发相同登录提交只能一个成功
+- 匿名不伪造身份去重
+
+deadline：
+
+- 未到截止时间成功
+- 已过截止时间失败
+- 无 deadline 成功
+
+delete：
+
+- draft 可删除
+- published 不可物理删除
+- closed 不可物理删除
+
+必须尽可能同时覆盖：
+
+mongomock
+真实 MongoDB
+
+纯 Jump/Validation 测试无需为了数字重复执行。
+
+==================================================
+二十、真实 API / Uvicorn Smoke Test
+==================================================
+
+实际启动 Uvicorn。
+
+至少实际完成一次：
+
+注册
+→ 登录
+→ 创建 survey
+→ 添加问题
+→ 添加 jump rule
+→ publish
+→ 获取公开页面/API
+→ 按跳转路径填写
+→ submit
+→ MongoDB 中确认 response
+→ 修改 published survey
+→ 产生新 schema_version/snapshot
+→ 使用旧 schema_version 再完成一次合法提交
+→ close
+→ 再次提交被拒绝
+→ logout
+
+记录真实输出。
+
+测试后清理随机测试数据库。
+
+==================================================
+二十一、文档
+==================================================
+
+更新：
+
+README.md
+docs/architecture.md
+docs/database-design.md
+docs/api.md
+docs/testing.md
+docs/ai-log.md
+
+新增并说明：
+
+- survey_versions
+- schema snapshot 生命周期
+- Jump Rule schema
+- Jump Engine
+- 历史版本 response
+- 匿名填写策略
+- 重复提交限制
+- deadline
+- draft/published/closed 删除策略
+- 已知限制
+
+database-design.md 必须解释：
+
+为什么：
+- current survey 与 historical snapshot 分离
+- response 不嵌 survey
+- response 不复制完整 schema
+- schema_version 如何关联 snapshot
+- 为什么 anonymous 无法可靠限制同一人重复提交
+
+==================================================
+二十二、AI 日志
+==================================================
+
+继续追加：
+
+docs/ai-log.md
+
+必须保存：
+
+- 本次完整 Prompt
+- AI 实际设计
+- AI 创建和修改文件
+- 实际测试
+- 实际失败
+- 实际修正
+- 未解决问题
+
+不要虚构失败。
+
+不要虚构人工参与。
+
+==================================================
+二十三、质量检查
+==================================================
+
+重点检查：
+
+- ObjectId
+- UTC datetime
+- bool vs number
+- NaN / Infinity
+- BSON int64
+- schema_version
+- snapshot 唯一性
+- published 并发修改
+- jump priority
+- stale version submission
+- duplicate submission race
+- public/private 字段泄露
+- owner 权限
+- deadline race
+- MongoDB unique index errors
+
+不要：
+
+- catch-all 后假装成功
+- 硬编码针对测试
+- 在 router 复制 validation/jump 逻辑
+- 引入 React/Vue
+- 引入 Redis/Celery
+- 引入无必要微服务
+- 为 DELETE 加复杂分布式架构
+
+==================================================
+二十四、最终交付
+==================================================
+
+完成后返回：
+
+A. 本轮总体设计
+
+B. 新增/修改文件
+
+C. survey_versions 最终模型
+
+D. snapshot 创建及一致性方案
+
+E. Jump Rule 最终模型
+
+F. Jump Engine 行为
+
+G. Question/Jump 引用完整性策略
+
+H. Public Survey API
+
+I. Response 最终模型
+
+J. Response 提交流程
+
+K. 匿名/登录策略
+
+L. 重复提交并发保护
+
+M. deadline 行为
+
+N. DELETE 新策略
+
+O. 实际执行命令
+
+P. pytest 最终结果、数量和退出码
+
+Q. 真实 MongoDB 测试结果
+
+R. Uvicorn/真实 API smoke test
+
+S. AI 日志更新
+
+T. 本轮所有真实错误与修正
+
+U. 仍未实现功能和下一阶段风险
+
+原始错误及 pytest 完整输出继续保存到：
+
+docs/iteration-3/
+
+不要只返回概述。

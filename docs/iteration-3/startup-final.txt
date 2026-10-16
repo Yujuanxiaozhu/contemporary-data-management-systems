@@ -1,0 +1,36 @@
+GET /: 200
+GET /health: 200
+GET /static/app.js: 200
+GET /openapi.json: 200
+POST /api/auth/register: 201
+POST /api/auth/login: 200
+POST /api/surveys: 201
+PUT /api/surveys/6ad11087bc4706f9d2b3a518: 200
+POST /api/surveys/6ad11087bc4706f9d2b3a518/questions: 201
+POST /api/surveys/6ad11087bc4706f9d2b3a518/questions: 201
+POST /api/surveys/6ad11087bc4706f9d2b3a518/questions: 201
+POST /api/surveys/6ad11087bc4706f9d2b3a518/questions: 201
+POST /api/surveys/6ad11087bc4706f9d2b3a518/jump-rules: 201
+POST /api/surveys/6ad11087bc4706f9d2b3a518/publish: 200
+GET /survey/g4kus_5ZrDNXazP7Qtmh39QaLrQxdLYyYBzoaZHbIXA: 200
+GET /api/public/surveys/g4kus_5ZrDNXazP7Qtmh39QaLrQxdLYyYBzoaZHbIXA: 200
+POST /api/public/surveys/g4kus_5ZrDNXazP7Qtmh39QaLrQxdLYyYBzoaZHbIXA/next: 200
+POST /api/public/surveys/g4kus_5ZrDNXazP7Qtmh39QaLrQxdLYyYBzoaZHbIXA/next: 200
+POST /api/public/surveys/g4kus_5ZrDNXazP7Qtmh39QaLrQxdLYyYBzoaZHbIXA/next: 200
+POST /api/public/surveys/g4kus_5ZrDNXazP7Qtmh39QaLrQxdLYyYBzoaZHbIXA/responses: 201
+MONGODB_RESPONSE_AND_ORIGINAL_SNAPSHOT=PASS
+PUT /api/surveys/6ad11087bc4706f9d2b3a518/questions/q3: 200
+POST /api/public/surveys/g4kus_5ZrDNXazP7Qtmh39QaLrQxdLYyYBzoaZHbIXA/responses: 201
+STALE_VERSION_SUBMISSION_WITH_IMMUTABLE_SCHEMA=PASS
+INDEXES {'_id_': {'v': 2, 'key': [('_id', 1)], 'collation': SON([('locale', 'simple')])}, 'survey_id_1_schema_version_1': {'v': 2, 'key': [('survey_id', 1), ('schema_version', 1)], 'unique': True, 'collation': SON([('locale', 'simple')])}} {'_id_': {'v': 2, 'key': [('_id', 1)], 'collation': SON([('locale', 'simple')])}, 'survey_id_1': {'v': 2, 'key': [('survey_id', 1)], 'collation': SON([('locale', 'simple')])}, 'dedupe_key_1': {'v': 2, 'key': [('dedupe_key', 1)], 'unique': True, 'sparse': True, 'collation': SON([('locale', 'simple')])}}
+POST /api/surveys/6ad11087bc4706f9d2b3a518/close: 200
+POST /api/public/surveys/g4kus_5ZrDNXazP7Qtmh39QaLrQxdLYyYBzoaZHbIXA/responses: 409
+DELETE /api/surveys/6ad11087bc4706f9d2b3a518: 409
+REAL_RESPONSE_API_SMOKE=PASS
+POST /api/surveys: 201
+POST /api/surveys/6ad11088bc4706f9d2b3a51d/publish: 200
+POST /api/surveys/6ad11088bc4706f9d2b3a51d/close: 200
+POST /api/auth/logout: 204
+GET /api/surveys: 401
+REAL_UVICORN_SMOKE=PASS
+Temporary server stopped; disposable test database removed.

@@ -1,0 +1,18 @@
+Original baseline test files and fixture SHA256 unchanged: PASS
+Original auth router unchanged: PASS
+No new dependencies: requirements.txt unchanged
+Changed existing source/test files:
+app/core/database.py
+app/core/security.py
+app/main.py
+app/models/response.py
+app/routers/responses.py
+app/routers/surveys.py
+app/schemas/response.py
+app/schemas/survey.py
+app/services/jump_engine.py
+app/services/questions.py
+app/services/surveys.py
+app/static/style.css
+tests/smoke_questions.py
+tests/smoke_startup.py

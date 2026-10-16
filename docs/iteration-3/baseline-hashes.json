@@ -1,0 +1,142 @@
+[
+  {
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "Path": "D:\\Codex\\survey-system\\app\\__init__.py"
+  },
+  {
+    "Hash": "03A600B72EFD6AEA301CD9877769F363326B4F46DE257AE4DF07E3D7F94CAD8F",
+    "Path": "D:\\Codex\\survey-system\\app\\main.py"
+  },
+  {
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "Path": "D:\\Codex\\survey-system\\app\\core\\__init__.py"
+  },
+  {
+    "Hash": "44EF25BEE1099633F1F5286C229D6D528BF60E43505B720380838554B883A914",
+    "Path": "D:\\Codex\\survey-system\\app\\core\\config.py"
+  },
+  {
+    "Hash": "E42FFD1C3C1CB2D6131F1348429EA3C2FF78AEA08EB605C6085A4CC2A714FA64",
+    "Path": "D:\\Codex\\survey-system\\app\\core\\database.py"
+  },
+  {
+    "Hash": "BD0058C2638B2381F190D7BE562B29EC1A5DFB5D207E6770EDCDA2961FCDEBF2",
+    "Path": "D:\\Codex\\survey-system\\app\\core\\security.py"
+  },
+  {
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "Path": "D:\\Codex\\survey-system\\app\\models\\__init__.py"
+  },
+  {
+    "Hash": "CFF3FBDFD20933530128746C9ABEA1F515C96561C33773AA667A43CDA7C5AB25",
+    "Path": "D:\\Codex\\survey-system\\app\\models\\response.py"
+  },
+  {
+    "Hash": "22D329757DA5EB9B28EA6B6752D21C95A05C644B3B268D144835FCDDFB55F758",
+    "Path": "D:\\Codex\\survey-system\\app\\models\\survey.py"
+  },
+  {
+    "Hash": "07320809BFE3EEC0A137C086909FF1A6FD133BABCBABE8FA3A7A0DFFCEDE74C8",
+    "Path": "D:\\Codex\\survey-system\\app\\models\\user.py"
+  },
+  {
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "Path": "D:\\Codex\\survey-system\\app\\routers\\__init__.py"
+  },
+  {
+    "Hash": "4A19D305F686AF96C5737924FD715B69555A6C47DA5C6F63173F888AF7AAF6D8",
+    "Path": "D:\\Codex\\survey-system\\app\\routers\\auth.py"
+  },
+  {
+    "Hash": "968F65ABBF67521CD565621D15E75AEA55DE97B3BE814767B3F85555DC01F426",
+    "Path": "D:\\Codex\\survey-system\\app\\routers\\responses.py"
+  },
+  {
+    "Hash": "968F65ABBF67521CD565621D15E75AEA55DE97B3BE814767B3F85555DC01F426",
+    "Path": "D:\\Codex\\survey-system\\app\\routers\\statistics.py"
+  },
+  {
+    "Hash": "7FFAE4E27E70DFE0D0C9BEA37E4A0A39D5C6EA6EB40B18F1B39D559BAAD8E26A",
+    "Path": "D:\\Codex\\survey-system\\app\\routers\\surveys.py"
+  },
+  {
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "Path": "D:\\Codex\\survey-system\\app\\schemas\\__init__.py"
+  },
+  {
+    "Hash": "EBFD3735A2CBD95E5511C8E6BCBC50C2AF2411DB80F9FBCD8B1B7D078EF97BA7",
+    "Path": "D:\\Codex\\survey-system\\app\\schemas\\auth.py"
+  },
+  {
+    "Hash": "6BE9BCEC546BF7EB3649E9628B83C81D9434F819ADD1A6DA554ECF41F9BE6B9C",
+    "Path": "D:\\Codex\\survey-system\\app\\schemas\\question.py"
+  },
+  {
+    "Hash": "968F65ABBF67521CD565621D15E75AEA55DE97B3BE814767B3F85555DC01F426",
+    "Path": "D:\\Codex\\survey-system\\app\\schemas\\response.py"
+  },
+  {
+    "Hash": "B498F20CF038DCA92935B079E73704F47B3D631CA598495FD7181D739F09FC7D",
+    "Path": "D:\\Codex\\survey-system\\app\\schemas\\survey.py"
+  },
+  {
+    "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "Path": "D:\\Codex\\survey-system\\app\\services\\__init__.py"
+  },
+  {
+    "Hash": "968F65ABBF67521CD565621D15E75AEA55DE97B3BE814767B3F85555DC01F426",
+    "Path": "D:\\Codex\\survey-system\\app\\services\\jump_engine.py"
+  },
+  {
+    "Hash": "48068B0BD15C77C8012335BB93308E1BC484A01EE43144BA00421AC9B1F04435",
+    "Path": "D:\\Codex\\survey-system\\app\\services\\questions.py"
+  },
+  {
+    "Hash": "968F65ABBF67521CD565621D15E75AEA55DE97B3BE814767B3F85555DC01F426",
+    "Path": "D:\\Codex\\survey-system\\app\\services\\statistics.py"
+  },
+  {
+    "Hash": "18EE8F69A385C800071B5133F488B652A631FB1B8E40EA51E2636D91EFC9A8F4",
+    "Path": "D:\\Codex\\survey-system\\app\\services\\surveys.py"
+  },
+  {
+    "Hash": "EDDD4C8AF633E781F3399BDFF4DD4274E2AD31476B9DC9BDD6468A32DB697947",
+    "Path": "D:\\Codex\\survey-system\\app\\services\\validation.py"
+  },
+  {
+    "Hash": "83CAA4CE35A209B5E60D4A0BD70BF0611B1C739EA377D7F00C8E6F1A8740387A",
+    "Path": "D:\\Codex\\survey-system\\app\\static\\app.js"
+  },
+  {
+    "Hash": "E573153F611935F8C049C7EA976C923DD2ADDCBB6E4FD29FD0ED5ECD91969F50",
+    "Path": "D:\\Codex\\survey-system\\app\\static\\style.css"
+  },
+  {
+    "Hash": "B2304BE6C21081ABFD32BA7D1B9DC316919138B92411563F0862C5865F073C8C",
+    "Path": "D:\\Codex\\survey-system\\app\\templates\\index.html"
+  },
+  {
+    "Hash": "96D87C3A8D8F25252ED12E10931DD66FE6F5481ECAA13C302873FF690B021D9F",
+    "Path": "D:\\Codex\\survey-system\\tests\\conftest.py"
+  },
+  {
+    "Hash": "ABBF3A63AB187D1768DE3751723184A07A67020C2E34275C8EC1B75A5B9AF228",
+    "Path": "D:\\Codex\\survey-system\\tests\\smoke_questions.py"
+  },
+  {
+    "Hash": "777054B1B31024F5867795EB82E6105383BFA4552C8DFA7D9C8721BC4447757A",
+    "Path": "D:\\Codex\\survey-system\\tests\\smoke_startup.py"
+  },
+  {
+    "Hash": "5BBA3973295F6C8BBE784C148632642E227F57CEC2429287CCDD84D5E6C0919F",
+    "Path": "D:\\Codex\\survey-system\\tests\\test_questions.py"
+  },
+  {
+    "Hash": "89873DE5AFC3C3D510DDDE0928B9DF5EE097006A7245CA68CC758B4CB71E6744",
+    "Path": "D:\\Codex\\survey-system\\tests\\test_system.py"
+  },
+  {
+    "Hash": "985FBB27318DB36C33A28D211F6B00C486D5D1C4FB001E968141C64C58968F41",
+    "Path": "D:\\Codex\\survey-system\\tests\\test_validation.py"
+  }
+]

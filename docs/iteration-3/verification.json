@@ -1,0 +1,17 @@
+{
+  "git_exit": 128,
+  "baseline_pytest_exit": 0,
+  "baseline_passed": 220,
+  "initial_extension_passed": 347,
+  "initial_extension_exit": 0,
+  "intermediate_passed": 367,
+  "final_pytest_exit": 0,
+  "final_passed": 371,
+  "compile_exit": 0,
+  "pip_check_exit": 0,
+  "javascript_exit": 0,
+  "first_smoke_exit": 1,
+  "fixed_smoke_exit": 0,
+  "final_smoke_exit": 0,
+  "before_shared_link_fix_passed": 369
+}

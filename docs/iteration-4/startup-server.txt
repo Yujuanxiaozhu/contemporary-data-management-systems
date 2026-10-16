@@ -1,0 +1,58 @@
+INFO:     Started server process [62608]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:55595 (Press CTRL+C to quit)
+INFO:     127.0.0.1:55654 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "GET /static/app.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/auth/register HTTP/1.1" 201 Created
+INFO:     127.0.0.1:55654 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/surveys HTTP/1.1" 201 Created
+INFO:     127.0.0.1:55654 - "GET /register HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "GET /login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "GET /dashboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "GET /surveys/new HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "PUT /api/surveys/6ad11413514fbc2ac07fcff6 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/surveys/6ad11413514fbc2ac07fcff6/questions HTTP/1.1" 201 Created
+INFO:     127.0.0.1:55654 - "POST /api/surveys/6ad11413514fbc2ac07fcff6/questions HTTP/1.1" 201 Created
+INFO:     127.0.0.1:55654 - "POST /api/surveys/6ad11413514fbc2ac07fcff6/questions HTTP/1.1" 201 Created
+INFO:     127.0.0.1:55654 - "POST /api/surveys/6ad11413514fbc2ac07fcff6/questions HTTP/1.1" 201 Created
+INFO:     127.0.0.1:55654 - "POST /api/surveys/6ad11413514fbc2ac07fcff6/jump-rules HTTP/1.1" 201 Created
+INFO:     127.0.0.1:55654 - "POST /api/surveys/6ad11413514fbc2ac07fcff6/publish HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "GET /surveys/6ad11413514fbc2ac07fcff6/edit HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "GET /dashboard HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "GET /survey/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "GET /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/responses HTTP/1.1" 201 Created
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/responses HTTP/1.1" 201 Created
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/responses HTTP/1.1" 201 Created
+INFO:     127.0.0.1:55654 - "GET /api/surveys/6ad11413514fbc2ac07fcff6/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "GET /surveys/6ad11413514fbc2ac07fcff6/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "GET /api/surveys/6ad11413514fbc2ac07fcff6/questions/score/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "PUT /api/surveys/6ad11413514fbc2ac07fcff6/questions/route HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/next HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/responses HTTP/1.1" 201 Created
+INFO:     127.0.0.1:55654 - "GET /api/surveys/6ad11413514fbc2ac07fcff6/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "GET /api/surveys/6ad11413514fbc2ac07fcff6/questions/route/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/surveys/6ad11413514fbc2ac07fcff6/close HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/public/surveys/W3IUANW9cS7CpVn26J-ezz8Bwm1auEjgqPwIVrg4lkk/responses HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:55654 - "POST /api/surveys HTTP/1.1" 201 Created
+INFO:     127.0.0.1:55654 - "POST /api/surveys/6ad11413514fbc2ac07fcffd/publish HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/surveys/6ad11413514fbc2ac07fcffd/close HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55654 - "POST /api/auth/logout HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:55654 - "GET /api/surveys HTTP/1.1" 401 Unauthorized

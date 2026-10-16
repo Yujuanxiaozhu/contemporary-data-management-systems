@@ -1,0 +1,3 @@
+node --check app/static/app.js: exit 0
+node --check app/static/management.js: exit 0
+node --check app/static/survey.js: exit 0

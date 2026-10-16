@@ -1,0 +1,9 @@
+{
+  "total": 371,
+  "baseline": 220,
+  "new_public_and_persistence": 112,
+  "pure_jumps": 39,
+  "real_mongodb": 126,
+  "mock": 126,
+  "pure_validation": 80
+}

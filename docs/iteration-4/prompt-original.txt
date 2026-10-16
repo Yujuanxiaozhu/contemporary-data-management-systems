@@ -1,0 +1,1037 @@
+继续开发现有项目：
+
+D:\Codex\survey-system
+
+这是第四轮增量开发，也是第一阶段项目最后一轮主要功能开发。
+
+前三轮已经完成并通过验收。
+
+当前测试基线：
+
+371 passed
+
+严禁重建项目、推倒现有架构或无必要重构已经稳定的核心模块。
+
+本轮主要目标：
+
+1. 实现统计系统
+2. 实现整份问卷统计
+3. 实现单题统计
+4. 正确处理历史 schema_version
+5. 补齐管理端最小可用 Web UI
+6. 完成从创建到统计的网页业务闭环
+7. 完成最终功能级回归测试
+
+本轮不要增加与课程要求无关的复杂功能。
+
+不要实现：
+- React
+- Vue
+- 数据可视化大型框架
+- Redis
+- Celery
+- 消息队列
+- 微服务
+- 实时统计缓存系统
+- NLP 文本分析
+- 复杂图表系统
+
+统计与管理页面以正确、清楚、可演示为目标。
+
+==================================================
+一、实施前检查
+==================================================
+
+首先只读检查现有：
+
+- app/
+- tests/
+- templates/
+- static/
+- MongoDB collections/indexes
+- survey_versions
+- responses
+- jump engine
+- question validation
+- survey/question/jump/response service
+- public API
+- 现有管理页面
+- README
+- docs
+
+确认当前 371 项基线及现有 UI 后再修改。
+
+不要修改前三轮测试来掩盖回归。
+
+==================================================
+二、统计总体原则
+==================================================
+
+统计数据来源：
+
+responses
+
+题目结构来源：
+
+survey_versions
+
+不要依赖当前 surveys.questions 去解释历史 response。
+
+不要建立写入时维护的永久统计计数器。
+
+不要在 response 提交时执行：
+
+count += 1
+
+本阶段统计应根据已经保存的 response 动态计算。
+
+原因：
+
+系统支持历史 schema_version，同一个 question_id 在不同版本中可能：
+
+- options 不同
+- validation 不同
+- 类型不同
+- 不存在
+
+强行跨不兼容版本合并会产生错误统计语义。
+
+因此统计必须按 schema_version 明确分组。
+
+==================================================
+三、整份问卷统计 API
+==================================================
+
+实现或完善：
+
+GET /api/surveys/{survey_id}/stats
+
+必须登录。
+
+必须是 survey owner。
+
+非 owner 保持现有权限策略，例如返回 404。
+
+非法 survey ObjectId 不得产生 500。
+
+建议返回结构：
+
+{
+  "survey_id": "...",
+  "total_responses": 30,
+  "versions": [
+    {
+      "schema_version": 3,
+      "response_count": 20,
+      "questions": [...]
+    },
+    {
+      "schema_version": 4,
+      "response_count": 10,
+      "questions": [...]
+    }
+  ]
+}
+
+要求：
+
+total_responses：
+
+统计该 survey 的全部合法已保存 response。
+
+versions：
+
+按 survey_schema_version 分组。
+
+每一个 version 必须使用对应：
+
+survey_versions
+
+中的 immutable snapshot 解释题目。
+
+不要使用当前 survey 最新结构解释旧答卷。
+
+没有 response 的当前 published version，如果合理，可以返回零统计，但行为必须文档化并保持一致。
+
+==================================================
+四、单题统计 API
+==================================================
+
+实现或完善：
+
+GET /api/surveys/{survey_id}/questions/{question_id}/stats
+
+必须 owner 才能访问。
+
+返回所有存在该 question_id 且有统计意义的历史 schema version。
+
+例如：
+
+{
+  "survey_id": "...",
+  "question_id": "q1",
+  "versions": [
+    {
+      "schema_version": 3,
+      "question": {...},
+      "response_count": 12,
+      "statistics": {...}
+    },
+    {
+      "schema_version": 4,
+      "question": {...},
+      "response_count": 6,
+      "statistics": {...}
+    }
+  ]
+}
+
+如果同一个 question_id 历史上改变了 type：
+
+不要合并统计。
+
+分别返回各 schema_version 的结果。
+
+如果 question 在某些版本不存在：
+
+不要伪造零值题目。
+
+==================================================
+五、single_choice 统计
+==================================================
+
+对单选题至少统计：
+
+- answered_count
+- 每个 option 的 count
+
+结构可类似：
+
+{
+  "type": "single_choice",
+  "answered_count": 20,
+  "options": [
+    {
+      "option_id": "a",
+      "label": "苹果",
+      "count": 12
+    },
+    {
+      "option_id": "b",
+      "label": "香蕉",
+      "count": 8
+    }
+  ]
+}
+
+必须使用该 snapshot 中的 option 定义及 label。
+
+不得使用当前最新 survey option label 覆盖历史版本。
+
+如果 response 中出现违反历史 snapshot 的数据：
+
+正常情况下不应发生。
+
+统计 service 不要静默把未知 option 计入一个不存在的合法选项。
+
+采取明确策略并测试，例如：
+- 忽略并记录异常
+或
+- 抛出数据一致性错误
+
+优先选择不会产生错误正常统计结果的安全策略。
+
+==================================================
+六、multiple_choice 统计
+==================================================
+
+至少统计：
+
+- answered_count
+- total_selections
+- 每个 option 被选择次数
+
+例如一个 respondent：
+
+["a", "b", "c"]
+
+则：
+
+answered_count +1
+total_selections +3
+
+每个对应 option count +1。
+
+不要把多选题：
+
+选项被选择次数
+
+错误解释为：
+
+有多少份 response。
+
+==================================================
+七、text 统计
+==================================================
+
+至少返回：
+
+- answered_count
+- 所有有效文本内容 values
+
+例如：
+
+{
+  "type": "text",
+  "answered_count": 5,
+  "values": [
+    "文本1",
+    "文本2"
+  ]
+}
+
+optional 且没有答案：
+
+不计入 answered_count。
+
+skipped question：
+
+不计入。
+
+不要做 NLP、关键词提取或词云。
+
+==================================================
+八、number 统计
+==================================================
+
+至少返回：
+
+- answered_count
+- values
+- average
+
+可以额外返回：
+
+- min
+- max
+
+但不是强制。
+
+average：
+
+只根据实际存在的合法数字答案计算。
+
+没有数字回答时：
+
+不要出现除零问题。
+
+明确设计：
+
+average = null
+
+或等价安全表达。
+
+必须处理：
+
+- integer
+- float
+- bool 不得被当作 number
+- 非有限数不应存在
+
+如果数据库出现异常历史数据，采取明确安全策略。
+
+==================================================
+九、跳转与统计
+==================================================
+
+统计以实际 response.answers 为准。
+
+被跳过的问题：
+
+没有 answer
+
+因此：
+
+- 不计入 answered_count
+- 不计入选项次数
+- 不进入 text values
+- 不进入 number average
+
+不要根据所有 response 数量推断每题回答人数。
+
+例如：
+
+100 人提交问卷
+
+只有 30 人经过 q5
+
+则：
+
+q5 answered_count 最大应是 30
+
+而不是 100。
+
+==================================================
+十、历史版本统计
+==================================================
+
+这是本轮重点。
+
+例如：
+
+version 2：
+
+q1 single_choice
+A
+B
+
+version 3：
+
+q1 single_choice
+A
+B
+C
+
+version 4：
+
+q1 number
+
+必须分别统计：
+
+version 2 q1
+version 3 q1
+version 4 q1
+
+禁止生成一个混合 q1 统计。
+
+整份问卷统计必须包含所有有 response 的历史版本，而不是只统计当前版本。
+
+这样旧填写数据不会因为问卷升级而消失。
+
+==================================================
+十一、统计 Service
+==================================================
+
+核心统计逻辑放入独立 service，例如：
+
+app/services/statistics.py
+
+Router 只负责：
+
+- authentication
+- owner dependency
+- 参数
+- 返回结果
+
+不要在 router 中编写大量：
+
+if question.type == ...
+
+避免不同 API 各复制一套统计逻辑。
+
+建议提供可复用函数，例如：
+
+compute_question_statistics(...)
+compute_version_statistics(...)
+compute_survey_statistics(...)
+
+具体命名结合现有架构即可。
+
+==================================================
+十二、MongoDB 查询
+==================================================
+
+检查现有：
+
+responses.survey_id
+
+索引。
+
+如果必要，增加合理复合索引，例如：
+
+(survey_id, survey_schema_version)
+
+不要为了课程规模设计复杂物化视图。
+
+当前统计可以：
+
+1. 查询目标 response
+2. 按 schema_version 分组
+3. 加载 snapshot
+4. 在 service 层计算
+
+如果使用 MongoDB aggregation pipeline 也可以，但必须保持代码可理解。
+
+优先正确性和可维护性。
+
+==================================================
+十三、统计权限
+==================================================
+
+统计属于问卷创建者。
+
+以下 API：
+
+/api/surveys/{survey_id}/stats
+
+/api/surveys/{survey_id}/questions/{question_id}/stats
+
+只有 owner 能访问。
+
+普通填写用户：
+
+不能通过 public token 获取统计。
+
+不要新增公开统计接口。
+
+==================================================
+十四、管理端 Web UI
+==================================================
+
+使用现有：
+
+Jinja2
+HTML
+CSS
+少量原生 JavaScript
+
+补齐最小可用管理端。
+
+不要引入 React/Vue。
+
+最终通过浏览器至少能够完成：
+
+1. 注册
+2. 登录
+3. 查看自己的 survey 列表
+4. 创建 survey
+5. 编辑：
+   - title
+   - description
+   - allow_anonymous
+   - allow_multiple_submissions
+   - deadline
+6. 添加 question
+7. 编辑 question
+8. 删除 question
+9. 创建 jump rule
+10. 编辑或删除 jump rule
+11. publish
+12. 查看并复制 public URL
+13. 打开公开填写页面
+14. 实际填写并提交
+15. 返回管理端
+16. 查看统计
+17. close survey
+18. logout
+
+界面不需要复杂。
+
+目标：
+
+老师无需使用 curl/Postman，也可以完成主要演示流程。
+
+==================================================
+十五、Dashboard
+==================================================
+
+提供清楚的 survey 管理页面。
+
+每个 survey 至少显示：
+
+- title
+- status
+- schema_version
+- deadline
+- public URL（适当状态下）
+- 编辑入口
+- 统计入口
+- publish / close 等合理操作
+
+用户只能看到自己创建的 survey。
+
+不要让页面通过前端隐藏按钮代替服务端权限检查。
+
+==================================================
+十六、Survey 编辑页面
+==================================================
+
+至少能够管理：
+
+基本信息
+
+questions
+
+jump rules
+
+清楚显示：
+
+- question order
+- question type
+- required
+- options
+- validation
+- jump rule source/target/operator/value/priority
+
+不要求实现拖拽排序。
+
+如果现有 API 支持 question order 修改，可以使用简单数字输入或上下调整。
+
+UI 必须调用已有后端规则。
+
+不要在 JavaScript 中重新复制完整 Validation Engine。
+
+服务端仍是最终权威。
+
+==================================================
+十七、统计页面
+==================================================
+
+提供：
+
+/surveys/{survey_id}/stats
+
+或符合当前 Web 路由风格的等价页面。
+
+显示：
+
+- 总答卷数
+- schema version 分组
+- 各题统计
+
+single_choice：
+
+表格显示 option + count。
+
+multiple_choice：
+
+显示 option + count，并显示 answered_count。
+
+text：
+
+列出实际文本答案。
+
+number：
+
+显示：
+- answered_count
+- average
+- min/max（如果实现）
+- 原始数字值（如果界面合理）
+
+历史 schema version：
+
+必须清楚区分。
+
+不要把不同版本的数据视觉上伪装为一个统计。
+
+不要求图表。
+
+简单表格和列表足够。
+
+==================================================
+十八、公开填写 UI 回归
+==================================================
+
+第三轮已经实现 public page。
+
+本轮不要重写。
+
+只检查并完善：
+
+- 单选
+- 多选
+- 文本
+- 数字
+- validation 错误
+- Jump
+- required
+- submit
+- 成功提示
+- deadline
+- closed
+- anonymous/login-required
+
+管理页面复制出来的链接必须能够直接进入该 public page。
+
+==================================================
+十九、测试要求
+==================================================
+
+当前基线：
+
+371 passed
+
+所有合理旧测试必须继续通过。
+
+新增统计测试至少覆盖：
+
+整体：
+
+- 空问卷无 response
+- 一个 response
+- 多 response
+- total_responses
+- schema_version 分组
+- 多历史版本统计
+- 旧版本数据不会丢失
+
+single_choice：
+
+- option counts 正确
+- answered_count 正确
+- 未回答不计入
+- skipped 不计入
+
+multiple_choice：
+
+- option counts
+- answered_count
+- total_selections
+- 一个用户选择多个选项正确累计
+
+text：
+
+- values
+- answered_count
+- optional missing
+- skipped missing
+
+number：
+
+- average
+- min/max（如果实现）
+- answered_count
+- 无回答 average 安全
+- int/float
+
+历史版本：
+
+- 同 question id options 改变
+- 同 question id type 改变
+- 统计按版本分开
+- 使用 snapshot label
+- 不使用 current survey definition 错误解释旧 response
+
+权限：
+
+- owner 可以查看
+- 非 owner 不可以
+- 未登录不可以
+- public token 不能绕过 owner statistics 权限
+
+single-question API：
+
+- 正确 question
+- question 不存在
+- 多版本存在
+- 部分版本不存在
+- 非法 survey id
+
+异常数据：
+
+至少测试统计 service 对不符合 snapshot 的历史异常 answer 有明确行为，不生成看似正常但错误的结果。
+
+==================================================
+二十、Web UI 测试
+==================================================
+
+使用当前项目已有测试工具验证管理页面至少：
+
+- register 页面正常
+- login 页面正常
+- dashboard 需要登录
+- dashboard 用户隔离
+- 创建页面正常
+- survey 编辑页面正常
+- stats 页面 owner 正常
+- 非 owner stats 页面被拒绝
+- public link 正确
+
+如果当前环境已有适合的浏览器测试工具，可以增加真实浏览器 smoke。
+
+如果没有，不要为了本轮强制引入 Playwright/Selenium 及大型浏览器依赖。
+
+可以继续采用：
+
+- FastAPI TestClient
+- HTTP smoke
+- JavaScript syntax check
+- 真实 Uvicorn API/browser-route smoke
+
+==================================================
+二十一、完整真实 Smoke
+==================================================
+
+实际启动 Uvicorn，并连接真实 MongoDB。
+
+执行完整演示链：
+
+注册 owner
+→ 登录
+→ 创建 survey
+→ 修改基本信息
+→ 创建四种题型
+→ 设置 validation
+→ 创建 jump rule
+→ publish
+→ 获取 public URL
+→ 匿名或登录用户按照配置填写
+→ jump
+→ submit
+→ 再填写若干不同答案
+→ 回 owner 管理页面
+→ 查看整个 survey statistics
+→ 查看单题 statistics
+→ 检查 option count
+→ 检查 number average
+→ 修改 published survey
+→ 创建新 schema version
+→ 使用新版本提交
+→ stats 中同时存在旧版与新版
+→ close
+→ public submit 被拒绝
+→ logout
+
+直接检查 MongoDB 中 response 和 snapshot 数据。
+
+记录真实统计结果，与预期人工计算值核对。
+
+不要只检查 HTTP 200。
+
+==================================================
+二十二、第一阶段已知风险处理
+==================================================
+
+第三轮留下以下项目：
+
+1. 匿名或 allow_multiple=true 时没有通用 idempotency key
+
+本轮不要求增加复杂通用幂等系统。
+
+继续作为已知限制记录。
+
+2. pending 操作故障恢复依赖后续请求
+
+如果现有恢复机制经过测试可用，本轮不重构。
+
+写入文档已知行为。
+
+3. 第三轮之前未 snapshot 的更早 draft schema 无法恢复
+
+由于 draft 不能合法产生 response，因此不影响正常历史答卷解释。
+
+把边界写清楚即可。
+
+4. survey_versions immutable 依赖业务写入控制
+
+本课程环境下保持当前设计。
+
+README/配置说明应提醒：
+
+MongoDB 不应向不可信远程用户开放直接写权限。
+
+不要为此增加数据库代理层。
+
+==================================================
+二十三、文档更新
+==================================================
+
+更新：
+
+README.md
+docs/architecture.md
+docs/database-design.md
+docs/api.md
+docs/testing.md
+docs/ai-log.md
+
+新增/完善：
+
+统计设计
+
+包括：
+
+- 为什么动态统计
+- 为什么按 schema_version 分组
+- single/multiple/text/number 各自统计语义
+- skipped question 的统计规则
+- 历史 snapshot 如何参与统计
+
+Web UI：
+
+说明：
+
+- 管理页面入口
+- 注册登录
+- 创建问卷
+- 发布
+- 分享
+- 填写
+- 查看统计
+
+README 应让教师从零能够：
+
+安装
+→ 配置 MongoDB
+→ 启动
+→ 浏览器使用
+→ 测试
+
+==================================================
+二十四、AI 日志
+==================================================
+
+继续真实更新：
+
+docs/ai-log.md
+
+保留前三轮。
+
+新增第四轮：
+
+- 完整 Prompt
+- AI 实际设计
+- 修改文件
+- 统计实现
+- UI 实现
+- 测试
+- 实际错误
+- 实际修正
+- 尚存限制
+
+不要虚构错误。
+
+不要虚构人工修改。
+
+==================================================
+二十五、代码与报告自然度
+==================================================
+
+代码注释继续保持正常学生项目风格：
+
+解释必要设计。
+
+不要加入大量：
+
+- “enterprise-grade”
+- “production-ready”
+- “robust scalable architecture”
+- AI 模板化自夸
+- 与课程无关的审计式描述
+
+文档应准确说明设计及原因。
+
+不要把课程作业写成商业系统白皮书。
+
+==================================================
+二十六、质量检查
+==================================================
+
+重点检查：
+
+- ObjectId
+- UTC
+- owner 权限
+- survey_schema_version
+- snapshot
+- skipped questions
+- historical option label
+- question type changed between versions
+- empty statistics
+- number average precision
+- bool
+- malformed historic data
+- public/private information
+- MongoDB indexes
+- JS syntax
+- HTML escaping
+- CSRF/现有 same-origin 策略不被破坏
+
+不要为了 UI 绕过现有 API 权限。
+
+==================================================
+二十七、最终执行
+==================================================
+
+至少执行：
+
+- Python compileall
+- JavaScript syntax check
+- pip check
+- 完整 pytest
+- 真实 MongoDB 测试
+- Uvicorn 启动
+- 完整业务 smoke
+- 统计结果人工预期值核对
+
+测试后：
+
+- 停止临时 Uvicorn
+- 清理随机测试库
+- 不删除正常项目文件
+
+==================================================
+二十八、第四轮交付格式
+==================================================
+
+完成后完整返回：
+
+A. 本轮总体设计
+
+B. 新增/修改文件
+
+C. Statistics Service 设计
+
+D. 整份问卷统计行为
+
+E. 单题统计行为
+
+F. 四种题型统计语义
+
+G. 历史 schema_version 统计策略
+
+H. MongoDB 查询与索引
+
+I. 统计权限
+
+J. 管理端页面及路由
+
+K. 问卷编辑 UI
+
+L. 统计 UI
+
+M. 公开填写 UI 回归
+
+N. 实际执行命令
+
+O. pytest 最终结果与退出码
+
+P. 真实 MongoDB 测试结果
+
+Q. Uvicorn 完整业务 smoke
+
+R. 实际统计数值及人工核对结果
+
+S. AI 日志更新
+
+T. 本轮所有实际错误和修正
+
+U. 当前已知限制
+
+V. 第一阶段尚未完成的任何要求
+
+将：
+
+- pytest 完整输出
+- 原始错误
+- 命令记录
+- smoke 输出
+- changed files
+- 人工统计核对
+
+保存到：
+
+docs/iteration-4/
+
+不要只返回摘要。

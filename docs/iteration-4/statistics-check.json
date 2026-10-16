@@ -1,0 +1,299 @@
+{
+  "expected_hand_calculation": {
+    "old_version_responses": 3,
+    "old_single_counts": [
+      2,
+      1
+    ],
+    "old_multiple_answered": 2,
+    "old_multiple_total_selections": 3,
+    "old_multiple_counts": [
+      2,
+      1
+    ],
+    "old_text_count": 2,
+    "old_number_values": [
+      10,
+      20,
+      30
+    ],
+    "old_number_average": 20,
+    "new_version_responses": 1,
+    "new_number_average": 40,
+    "total_responses": 4
+  },
+  "actual_statistics": {
+    "survey_id": "6ad11413514fbc2ac07fcff6",
+    "total_responses": 4,
+    "versions": [
+      {
+        "schema_version": 6,
+        "response_count": 3,
+        "questions": [
+          {
+            "question": {
+              "id": "route",
+              "type": "single_choice",
+              "title": "路线",
+              "required": true,
+              "order": 1,
+              "options": [
+                {
+                  "id": "a",
+                  "label": "旧常规"
+                },
+                {
+                  "id": "b",
+                  "label": "跳转"
+                }
+              ],
+              "validation": {}
+            },
+            "statistics": {
+              "type": "single_choice",
+              "answered_count": 3,
+              "options": [
+                {
+                  "option_id": "a",
+                  "label": "旧常规",
+                  "count": 2
+                },
+                {
+                  "option_id": "b",
+                  "label": "跳转",
+                  "count": 1
+                }
+              ]
+            }
+          },
+          {
+            "question": {
+              "id": "fruit",
+              "type": "multiple_choice",
+              "title": "水果",
+              "required": false,
+              "order": 2,
+              "options": [
+                {
+                  "id": "x",
+                  "label": "苹果"
+                },
+                {
+                  "id": "y",
+                  "label": "香蕉"
+                }
+              ],
+              "validation": {
+                "min_selections": 1,
+                "max_selections": 2
+              }
+            },
+            "statistics": {
+              "type": "multiple_choice",
+              "answered_count": 2,
+              "options": [
+                {
+                  "option_id": "x",
+                  "label": "苹果",
+                  "count": 2
+                },
+                {
+                  "option_id": "y",
+                  "label": "香蕉",
+                  "count": 1
+                }
+              ],
+              "total_selections": 3
+            }
+          },
+          {
+            "question": {
+              "id": "text",
+              "type": "text",
+              "title": "感想",
+              "required": false,
+              "order": 3,
+              "options": [],
+              "validation": {
+                "min_length": 1,
+                "max_length": 100
+              }
+            },
+            "statistics": {
+              "type": "text",
+              "answered_count": 2,
+              "values": [
+                "第一条",
+                "第二条"
+              ]
+            }
+          },
+          {
+            "question": {
+              "id": "score",
+              "type": "number",
+              "title": "数字",
+              "required": true,
+              "order": 4,
+              "options": [],
+              "validation": {
+                "min": 0,
+                "max": 100
+              }
+            },
+            "statistics": {
+              "type": "number",
+              "answered_count": 3,
+              "values": [
+                10,
+                20,
+                30
+              ],
+              "average": 20.0,
+              "min": 10,
+              "max": 30
+            }
+          }
+        ]
+      },
+      {
+        "schema_version": 7,
+        "response_count": 1,
+        "questions": [
+          {
+            "question": {
+              "id": "route",
+              "type": "single_choice",
+              "title": "路线",
+              "required": true,
+              "order": 1,
+              "options": [
+                {
+                  "id": "a",
+                  "label": "新常规"
+                },
+                {
+                  "id": "b",
+                  "label": "跳转"
+                },
+                {
+                  "id": "c",
+                  "label": "新增路线"
+                }
+              ],
+              "validation": {}
+            },
+            "statistics": {
+              "type": "single_choice",
+              "answered_count": 1,
+              "options": [
+                {
+                  "option_id": "a",
+                  "label": "新常规",
+                  "count": 0
+                },
+                {
+                  "option_id": "b",
+                  "label": "跳转",
+                  "count": 0
+                },
+                {
+                  "option_id": "c",
+                  "label": "新增路线",
+                  "count": 1
+                }
+              ]
+            }
+          },
+          {
+            "question": {
+              "id": "fruit",
+              "type": "multiple_choice",
+              "title": "水果",
+              "required": false,
+              "order": 2,
+              "options": [
+                {
+                  "id": "x",
+                  "label": "苹果"
+                },
+                {
+                  "id": "y",
+                  "label": "香蕉"
+                }
+              ],
+              "validation": {
+                "min_selections": 1,
+                "max_selections": 2
+              }
+            },
+            "statistics": {
+              "type": "multiple_choice",
+              "answered_count": 1,
+              "options": [
+                {
+                  "option_id": "x",
+                  "label": "苹果",
+                  "count": 0
+                },
+                {
+                  "option_id": "y",
+                  "label": "香蕉",
+                  "count": 1
+                }
+              ],
+              "total_selections": 1
+            }
+          },
+          {
+            "question": {
+              "id": "text",
+              "type": "text",
+              "title": "感想",
+              "required": false,
+              "order": 3,
+              "options": [],
+              "validation": {
+                "min_length": 1,
+                "max_length": 100
+              }
+            },
+            "statistics": {
+              "type": "text",
+              "answered_count": 1,
+              "values": [
+                "新版本"
+              ]
+            }
+          },
+          {
+            "question": {
+              "id": "score",
+              "type": "number",
+              "title": "数字",
+              "required": true,
+              "order": 4,
+              "options": [],
+              "validation": {
+                "min": 0,
+                "max": 100
+              }
+            },
+            "statistics": {
+              "type": "number",
+              "answered_count": 1,
+              "values": [
+                40
+              ],
+              "average": 40.0,
+              "min": 40,
+              "max": 40
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "comparison": "PASS",
+  "arithmetic": "old: (10+20+30)/3=20; new: 40/1=40. multi: [x,y]+[x] => x=2,y=1,selections=3"
+}

@@ -1,0 +1,16 @@
+INFO:     Started server process [71300]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:60918 (Press CTRL+C to quit)
+INFO:     127.0.0.1:60919 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60919 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60919 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60919 - "GET /static/app.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60919 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60919 - "POST /api/auth/register HTTP/1.1" 201 Created
+INFO:     127.0.0.1:60919 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60919 - "POST /api/surveys HTTP/1.1" 201 Created
+INFO:     127.0.0.1:60919 - "POST /api/surveys/6ad102466c68b27ca3e96b8c/publish HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60919 - "POST /api/surveys/6ad102466c68b27ca3e96b8c/close HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60919 - "POST /api/auth/logout HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:60919 - "GET /api/surveys HTTP/1.1" 401 Unauthorized

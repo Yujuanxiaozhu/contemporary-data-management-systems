@@ -1,0 +1,15 @@
+{
+  "git_exit": 128,
+  "baseline_pytest_exit": 0,
+  "baseline_passed": 371,
+  "first_pytest_exit": 0,
+  "first_passed": 439,
+  "final_pytest_exit": 0,
+  "final_passed": 455,
+  "compile_exit": 0,
+  "javascript_check_exit": 0,
+  "pip_check_exit": 0,
+  "uvicorn_smoke_exit": 0,
+  "hand_calculation_comparison": "PASS",
+  "browser_click_e2e": false
+}

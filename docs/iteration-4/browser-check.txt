@@ -1,0 +1,1 @@
+Computer-use skill inspected; existing app inventory exposed no browser window. No other applications were controlled; no browser/testing package installed. Verification uses TestClient HTML routes, actual Uvicorn HTTP routes/API flow, escaping assertions and JavaScript syntax checks. No claim of real browser click E2E.

@@ -1,0 +1,479 @@
+继续开发现有项目：
+
+D:\Codex\survey-system
+
+第一轮已经完成并通过验收。
+
+严禁重建项目、推倒现有架构或重新实现第一轮已有功能。
+
+先完整只读检查当前源码、测试和 docs，理解现有实现后，在现有代码基础上继续。
+
+本轮目标：
+
+实现“题目系统 + Validation Engine + 问卷版本机制”。
+
+本轮不要实现：
+- 条件跳转执行
+- 公开填写页面
+- response 正式提交
+- 统计功能
+- 复杂前端编辑器
+
+====================
+一、保留第一轮行为
+====================
+
+现有以下功能必须继续可用：
+
+- 注册
+- 登录
+- 登出
+- /api/auth/me
+- 问卷 CRUD
+- 发布
+- 关闭
+- owner 权限隔离
+- MongoDB 真实连接
+- sessions
+- 所有第一轮测试
+
+禁止为了本轮开发破坏第一轮已经通过的 70 个测试。
+
+====================
+二、题目模型
+====================
+
+系统内部统一支持四种 question type：
+
+single_choice
+multiple_choice
+text
+number
+
+虽然课程说明将 text 和 number 都称为“填空题”，内部模型应区分二者。
+
+Question 至少包含：
+
+- id
+- type
+- title
+- required
+- order
+- options
+- validation
+
+问题 ID 必须在所属 survey 内唯一并稳定。
+
+不要使用 MongoDB ObjectId 作为嵌套 question 的唯一必需方案，如果当前实现采用稳定字符串 ID 更适合，请保持简单。
+
+题目嵌入 surveys.questions。
+
+不要创建独立 questions collection。
+
+====================
+三、各题型字段
+====================
+
+1. single_choice
+
+options：
+
+[
+  {
+    "id": "...",
+    "label": "..."
+  }
+]
+
+要求：
+
+- 至少提供合理数量的选项。
+- option id 在该 question 内唯一。
+- answer 必须对应一个合法 option id。
+- required=true 时不能缺失答案。
+
+2. multiple_choice
+
+options 与 single_choice 相同。
+
+validation 支持：
+
+- min_selections
+- max_selections
+- exact_selections
+
+要求：
+
+- answer 为 option id 数组。
+- 禁止重复选择同一 option。
+- 所有 option id 必须存在。
+- exact_selections 与 min/max 的组合必须做一致性检查。
+- validation 配置自身非法时，在题目创建/修改阶段直接拒绝，不要等用户填写时才发现。
+
+3. text
+
+validation 支持：
+
+- min_length
+- max_length
+
+要求：
+
+- answer 必须为字符串。
+- 校验长度。
+- min_length 不得大于 max_length。
+- 必须合理处理 required 与空字符串之间的关系。
+
+4. number
+
+validation 支持：
+
+- min
+- max
+- integer_only
+
+要求：
+
+- answer 必须是数字语义的数据。
+- integer_only=true 时禁止小数。
+- min 不得大于 max。
+- 注意 Python 中 bool 是 int 子类，不要把 true/false 当合法数字答案。
+- 对 NaN / Infinity 等非正常数值采取明确安全策略。
+
+====================
+四、Validation Engine
+====================
+
+核心业务逻辑放在：
+
+app/services/validation.py
+
+不要把大量校验写进 router。
+
+至少提供两类校验：
+
+1. question definition validation
+
+负责检查题目本身配置是否合法。
+
+例如：
+
+- 未知 type
+- title 为空
+- 重复 option id
+- single/multiple 没有合法 options
+- min > max
+- exact 与 min/max 冲突
+- number min > max
+- 不属于该题型的 validation 字段
+
+2. answer validation
+
+输入：
+
+question definition
+answer / missing answer
+
+输出必须能够明确表示：
+
+- valid / invalid
+- 错误原因
+
+设计应便于下一轮 response 提交时复用。
+
+不要为每个 API 再写一套校验规则。
+
+错误信息应适合 API 返回和测试断言。
+
+====================
+五、题目 API
+====================
+
+在现有 survey owner 权限模型基础上实现合理的题目管理 API。
+
+建议至少：
+
+POST /api/surveys/{survey_id}/questions
+
+PUT /api/surveys/{survey_id}/questions/{question_id}
+
+DELETE /api/surveys/{survey_id}/questions/{question_id}
+
+如果现有项目 API 风格有更一致的设计，可以保持现有风格，但必须在 docs/api.md 说明。
+
+必须保证：
+
+- 未登录不能操作。
+- 只能操作自己的 survey。
+- 非法 survey id 不产生 500。
+- 不存在 question 返回合理错误。
+- question id 不重复。
+- order 行为明确。
+
+当删除题目后，题目顺序必须保持可解释、一致。
+
+不要依赖前端保证数据合法。
+
+====================
+六、schema_version
+====================
+
+正式落实 surveys.schema_version。
+
+新建 survey：
+
+schema_version = 1
+
+仅修改以下普通元信息不升级版本：
+
+- title
+- description
+- allow_anonymous
+- allow_multiple_submissions
+- deadline
+
+当发生会影响 response 含义的问题结构修改时：
+
+- 新增题目
+- 删除题目
+- 修改题目内容
+- 修改题型
+- 修改 options
+- 修改 validation
+
+执行：
+
+schema_version += 1
+
+一次 API 操作只递增一次。
+
+版本必须由服务端维护，禁止客户端自行指定新版本。
+
+为下一阶段 jump_rules 修改版本预留清晰机制，但本轮不要实现跳转执行。
+
+====================
+七、状态与编辑
+====================
+
+采用以下规则：
+
+draft：
+允许编辑题目。
+
+published：
+仍允许编辑题目；
+涉及问题结构修改时正常 schema_version +1。
+
+closed：
+默认不再接受未来填写，但题目历史数据仍应保持可读取。
+本轮如果允许 closed 后继续编辑，请明确记录实际行为及理由；
+如果限制编辑，也要通过明确业务规则实现。
+
+不要凭感觉偷偷改变第一轮状态机。
+
+====================
+八、删除策略
+====================
+
+检查第一轮已经实现的 survey DELETE。
+
+落实以下保护规则：
+
+如果 survey 尚无 response：
+允许物理删除。
+
+如果 survey 已经存在 response：
+禁止直接物理删除；
+返回合理冲突状态，例如 HTTP 409；
+提示应采用关闭问卷而不是删除历史数据。
+
+不要在删除 survey 时自动级联删除 response。
+
+即使 response 正式提交接口尚未实现，也需要把该规则加入数据层/服务层并测试。
+
+====================
+九、测试
+====================
+
+继续使用当前测试体系。
+
+第一轮现有测试必须全部继续通过。
+
+为本轮至少增加以下测试：
+
+题目定义：
+
+- 创建合法单选题
+- 单选没有 options 被拒绝
+- 重复 option id 被拒绝
+- 创建合法多选题
+- min_selections > max_selections 被拒绝
+- exact_selections 冲突被拒绝
+- 创建合法 text
+- min_length > max_length 被拒绝
+- 创建合法 number
+- min > max 被拒绝
+
+answer validation：
+
+- required 缺失失败
+- 非 required 缺失成功
+- single 合法选项成功
+- single 非法选项失败
+- multiple 合法成功
+- multiple 数量过少失败
+- multiple 数量过多失败
+- multiple exact 数量失败
+- multiple 重复 option 失败
+- text 长度合法
+- text 太短
+- text 太长
+- number 合法
+- number 越界
+- integer_only 拒绝小数
+- bool 不得作为合法数字
+- NaN / Infinity 按设计被拒绝
+
+API：
+
+- owner 添加题目
+- 非 owner 添加题目被拒绝
+- 修改题目
+- 删除题目
+- 不存在 question
+- 非法 survey id
+- schema_version 初始为 1
+- 新增题目版本 +1
+- 修改题目版本 +1
+- 删除题目版本 +1
+- 仅修改 survey 普通元信息不升级 schema_version
+- published 状态下题目编辑按设计工作
+- 已有 response 时 survey DELETE 被禁止
+- 无 response 时 DELETE 行为保持正常
+
+同时尽可能继续覆盖：
+
+- mongomock
+- 真实 MongoDB
+
+不要简单复制同一测试文件来制造测试数量，确保不同数据后端执行的是同一业务语义。
+
+====================
+十、文档更新
+====================
+
+更新：
+
+README.md
+docs/architecture.md
+docs/database-design.md
+docs/api.md
+docs/testing.md
+docs/ai-log.md
+
+database-design.md 新增：
+
+- question 嵌入结构
+- 四类题型
+- options
+- validation
+- schema_version 设计
+- 为什么 question 嵌入 survey
+- 为什么 response 仍独立
+- 版本机制如何为第二阶段保留兼容空间
+
+testing.md：
+
+记录本轮真实测试环境、命令、测试数量和结果。
+
+ai-log.md：
+
+继续真实追加本轮记录。
+
+必须保存：
+- 本次收到的完整 Prompt
+- AI 实际修改内容
+- 实际出现的问题
+- 实际修复
+- 测试结果
+- 未解决问题
+
+禁止虚构人工修改或 AI 错误。
+
+====================
+十一、质量要求
+====================
+
+继续遵守第一轮原则：
+
+- Router 不承担复杂业务逻辑。
+- Validation 统一实现。
+- 不复制业务规则。
+- 不吞异常。
+- 不用 catch-all 掩盖问题。
+- 不通过硬编码针对测试。
+- 不引入当前无必要的大型依赖。
+- 不重构已经稳定的模块，除非本轮确有必要。
+- 如果必须修改第一轮架构，说明原因及影响。
+
+特别检查：
+
+- Pydantic / PyMongo 类型转换
+- bool 与 number 的关系
+- ObjectId
+- UTC 时间
+- option/question id 冲突
+- schema_version 原子更新或并发安全
+- MongoDB 更新操作不要意外覆盖其他 survey 字段
+
+====================
+十二、执行与交付
+====================
+
+实施前先检查 Git 状态和当前项目。
+
+如果项目当前不是 Git 仓库，记录事实，不要擅自创建远程仓库。
+
+执行：
+
+- 代码修改
+- 静态/编译检查
+- pytest
+- 真实 MongoDB 测试
+- 必要的实际 API 启动验证
+
+所有失败必须真实记录并修复后重新执行。
+
+完成后返回：
+
+A. 本轮设计说明
+
+B. 修改/新增文件
+
+C. 最终 Question 数据结构
+
+D. Validation Engine 实现方式
+
+E. schema_version 实际行为
+
+F. 题目 API
+
+G. survey 删除保护策略
+
+H. 实际执行命令
+
+I. pytest 完整最终结果与退出码
+
+J. 真实 MongoDB 测试结果
+
+K. 启动/API 实际验证结果
+
+L. ai-log 更新说明
+
+M. 本轮遇到的实际错误与修正
+
+N. 尚未实现内容和下一阶段风险
+
+不要只提供摘要。
+
+如果执行过程中出现报错，请保存原始错误信息，不要只返回改写后的描述。

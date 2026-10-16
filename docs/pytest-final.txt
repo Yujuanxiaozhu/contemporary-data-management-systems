@@ -1,0 +1,91 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.14, pytest-9.1.1, pluggy-1.7.0 -- D:\Codex\survey-system\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\Codex\survey-system
+configfile: pytest.ini
+testpaths: tests
+plugins: anyio-4.15.1
+collecting ... collected 70 items
+
+tests/test_system.py::test_register[mock] PASSED                         [  1%]
+tests/test_system.py::test_register[mongo] PASSED                        [  2%]
+tests/test_system.py::test_duplicate[mock] PASSED                        [  4%]
+tests/test_system.py::test_duplicate[mongo] PASSED                       [  5%]
+tests/test_system.py::test_bad_registration[mock-data0] PASSED           [  7%]
+tests/test_system.py::test_bad_registration[mock-data1] PASSED           [  8%]
+tests/test_system.py::test_bad_registration[mongo-data0] PASSED          [ 10%]
+tests/test_system.py::test_bad_registration[mongo-data1] PASSED          [ 11%]
+tests/test_system.py::test_login_and_me[mock] PASSED                     [ 12%]
+tests/test_system.py::test_login_and_me[mongo] PASSED                    [ 14%]
+tests/test_system.py::test_wrong_login[mock-alice] PASSED                [ 15%]
+tests/test_system.py::test_wrong_login[mock-missing] PASSED              [ 17%]
+tests/test_system.py::test_wrong_login[mongo-alice] PASSED               [ 18%]
+tests/test_system.py::test_wrong_login[mongo-missing] PASSED             [ 20%]
+tests/test_system.py::test_unauthenticated[mock-GET-/api/auth/me-None] PASSED [ 21%]
+tests/test_system.py::test_unauthenticated[mock-GET-/api/surveys-None] PASSED [ 22%]
+tests/test_system.py::test_unauthenticated[mock-POST-/api/surveys-data2] PASSED [ 24%]
+tests/test_system.py::test_unauthenticated[mock-GET-/api/surveys/012345678901234567890123-None] PASSED [ 25%]
+tests/test_system.py::test_unauthenticated[mock-PUT-/api/surveys/012345678901234567890123-data4] PASSED [ 27%]
+tests/test_system.py::test_unauthenticated[mock-DELETE-/api/surveys/012345678901234567890123-None] PASSED [ 28%]
+tests/test_system.py::test_unauthenticated[mock-POST-/api/surveys/012345678901234567890123/publish-None] PASSED [ 30%]
+tests/test_system.py::test_unauthenticated[mock-POST-/api/surveys/012345678901234567890123/close-None] PASSED [ 31%]
+tests/test_system.py::test_unauthenticated[mongo-GET-/api/auth/me-None] PASSED [ 32%]
+tests/test_system.py::test_unauthenticated[mongo-GET-/api/surveys-None] PASSED [ 34%]
+tests/test_system.py::test_unauthenticated[mongo-POST-/api/surveys-data2] PASSED [ 35%]
+tests/test_system.py::test_unauthenticated[mongo-GET-/api/surveys/012345678901234567890123-None] PASSED [ 37%]
+tests/test_system.py::test_unauthenticated[mongo-PUT-/api/surveys/012345678901234567890123-data4] PASSED [ 38%]
+tests/test_system.py::test_unauthenticated[mongo-DELETE-/api/surveys/012345678901234567890123-None] PASSED [ 40%]
+tests/test_system.py::test_unauthenticated[mongo-POST-/api/surveys/012345678901234567890123/publish-None] PASSED [ 41%]
+tests/test_system.py::test_unauthenticated[mongo-POST-/api/surveys/012345678901234567890123/close-None] PASSED [ 42%]
+tests/test_system.py::test_create_serialization[mock] PASSED             [ 44%]
+tests/test_system.py::test_create_serialization[mongo] PASSED            [ 45%]
+tests/test_system.py::test_update_delete[mock] PASSED                    [ 47%]
+tests/test_system.py::test_update_delete[mongo] PASSED                   [ 48%]
+tests/test_system.py::test_owner_isolation[mock] PASSED                  [ 50%]
+tests/test_system.py::test_owner_isolation[mongo] PASSED                 [ 51%]
+tests/test_system.py::test_publish_close[mock] PASSED                    [ 52%]
+tests/test_system.py::test_publish_close[mongo] PASSED                   [ 54%]
+tests/test_system.py::test_invalid_id[mock-invalid] PASSED               [ 55%]
+tests/test_system.py::test_invalid_id[mock-aaaaaaaaaaaaaaaaaaaaaaa] PASSED [ 57%]
+tests/test_system.py::test_invalid_id[mock-zzzzzzzzzzzzzzzzzzzzzzzz] PASSED [ 58%]
+tests/test_system.py::test_invalid_id[mongo-invalid] PASSED              [ 60%]
+tests/test_system.py::test_invalid_id[mongo-aaaaaaaaaaaaaaaaaaaaaaa] PASSED [ 61%]
+tests/test_system.py::test_invalid_id[mongo-zzzzzzzzzzzzzzzzzzzzzzzz] PASSED [ 62%]
+tests/test_system.py::test_missing_id[mock] PASSED                       [ 64%]
+tests/test_system.py::test_missing_id[mongo] PASSED                      [ 65%]
+tests/test_system.py::test_logout_revokes[mock] PASSED                   [ 67%]
+tests/test_system.py::test_logout_revokes[mongo] PASSED                  [ 68%]
+tests/test_system.py::test_expired_session[mock] PASSED                  [ 70%]
+tests/test_system.py::test_expired_session[mongo] PASSED                 [ 71%]
+tests/test_system.py::test_cookie_and_rotation[mock] PASSED              [ 72%]
+tests/test_system.py::test_cookie_and_rotation[mongo] PASSED             [ 74%]
+tests/test_system.py::test_cross_origin[mock] PASSED                     [ 75%]
+tests/test_system.py::test_cross_origin[mongo] PASSED                    [ 77%]
+tests/test_system.py::test_invalid_survey_input[mock-data0] PASSED       [ 78%]
+tests/test_system.py::test_invalid_survey_input[mock-data1] PASSED       [ 80%]
+tests/test_system.py::test_invalid_survey_input[mock-data2] PASSED       [ 81%]
+tests/test_system.py::test_invalid_survey_input[mock-data3] PASSED       [ 82%]
+tests/test_system.py::test_invalid_survey_input[mock-data4] PASSED       [ 84%]
+tests/test_system.py::test_invalid_survey_input[mongo-data0] PASSED      [ 85%]
+tests/test_system.py::test_invalid_survey_input[mongo-data1] PASSED      [ 87%]
+tests/test_system.py::test_invalid_survey_input[mongo-data2] PASSED      [ 88%]
+tests/test_system.py::test_invalid_survey_input[mongo-data3] PASSED      [ 90%]
+tests/test_system.py::test_invalid_survey_input[mongo-data4] PASSED      [ 91%]
+tests/test_system.py::test_indexes[mock] PASSED                          [ 92%]
+tests/test_system.py::test_indexes[mongo] PASSED                         [ 94%]
+tests/test_system.py::test_token_collision_retry[mock] PASSED            [ 95%]
+tests/test_system.py::test_token_collision_retry[mongo] PASSED           [ 97%]
+tests/test_system.py::test_home_and_health[mock] PASSED                  [ 98%]
+tests/test_system.py::test_home_and_health[mongo] PASSED                 [100%]
+
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  D:\Codex\survey-system\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_system.py: 182 warnings
+  D:\Codex\survey-system\.venv\Lib\site-packages\mongomock\helpers.py:73: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    return datetime.utcnow()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+====================== 70 passed, 183 warnings in 7.04s =======================

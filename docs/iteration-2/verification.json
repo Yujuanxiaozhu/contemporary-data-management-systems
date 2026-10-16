@@ -1,0 +1,11 @@
+{
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.14",
+  "git_status_exit": 128,
+  "baseline_pytest_exit": 0,
+  "first_pytest_exit": 0,
+  "final_pytest_exit": 0,
+  "compile_exit": 0,
+  "pip_check_exit": 0,
+  "startup_exit": 0
+}
