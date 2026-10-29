@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "D:\\Codex\\survey-system\\.venv\\Scripts\\python.exe",
+    "-B",
+    "-u",
+    "D:\\Codex\\survey-system\\docs\\stage2\\final-integration-20261029\\run_smoke.py",
+    "--worker",
+    "smoke-final"
+  ],
+  "cwd": "D:\\Codex\\survey-system",
+  "exit_code": 0,
+  "elapsed_seconds": 6.781,
+  "output": "smoke-final.txt"
+}

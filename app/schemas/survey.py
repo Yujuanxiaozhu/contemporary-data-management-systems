@@ -28,10 +28,17 @@ class SurveyOut(SurveyInput):
     public_token: str
     questions: list[QuestionDefinition]
     jump_rules: list[dict[str, Any]]
+    question_bindings: list[dict[str, Any]] = Field(default_factory=list)
+    revision_of: str | None = None
+    revision_source_schema_version: int | None = None
     schema_version: int
     created_at: datetime
     updated_at: datetime
 
 def survey_out(doc: dict) -> dict:
-    fields = SurveyOut.model_fields.keys() - {'id', 'owner_id'}
-    return {**{k: doc[k] for k in fields}, 'id': str(doc['_id']), 'owner_id': str(doc['owner_id'])}
+    from app.services.draft_bindings import binding_out
+    fields = SurveyOut.model_fields.keys() - {'id', 'owner_id', 'question_bindings', 'revision_of', 'revision_source_schema_version'}
+    return {**{k: doc[k] for k in fields}, 'id': str(doc['_id']), 'owner_id': str(doc['owner_id']),
+            'question_bindings': [binding_out(b) for b in doc.get('question_bindings', [])],
+            'revision_of': str(doc['revision_of']) if doc.get('revision_of') else None,
+            'revision_source_schema_version': doc.get('revision_source_schema_version')}

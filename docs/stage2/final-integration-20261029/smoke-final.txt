@@ -1,0 +1,22 @@
+GET /: 200
+GET /health: 200
+GET /static/app.js: 200
+GET /openapi.json: 200
+POST /api/auth/register: 201
+POST /api/auth/login: 200
+POST /api/surveys: 201
+QUESTION_VERSIONS=PASS
+DRAFT_BINDING_SNAPSHOT_RESPONSE=PASS
+SHARE=PASS
+PRIVATE_BANK_AND_SHARED_BINDING=PASS
+REBUILD=PASS {"generation_id": "6ae33a753f26993591d2df7b", "source_count": 1, "source_set_digest": "a79b3f5cea8b11405b8dbdeb28916da402b69a99d53e3a1db52904c9178c7f74"}
+REBUILD=PASS {"generation_id": "6ae33a773428f440c39a71f4", "source_count": 1, "source_set_digest": "14c02deac1537501623477fb243b2a27da1fb8427eb0da47abf17ed699ff9329"}
+USAGE_V1_V2_STATS_AND_OWNER_ISOLATION=PASS
+REVOKE_AND_HISTORY=PASS
+MANAGEMENT_PAGES=PASS
+POST /api/surveys/6ae33a744bf4540528003cc7/publish: 200
+POST /api/surveys/6ae33a744bf4540528003cc7/close: 200
+POST /api/auth/logout: 204
+GET /api/surveys: 401
+REAL_UVICORN_SMOKE=PASS
+Temporary server stopped; disposable test database removed.

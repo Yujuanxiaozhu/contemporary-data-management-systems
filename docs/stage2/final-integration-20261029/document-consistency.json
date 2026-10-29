@@ -1,0 +1,85 @@
+{
+  "document_files": [
+    "README.md",
+    "docs/architecture.md",
+    "docs/database-design.md",
+    "docs/api.md",
+    "docs/testing.md",
+    "docs/ai-log.md",
+    "docs/project-report.md",
+    "docs/stage2/README.md"
+  ],
+  "routes_checked": 16,
+  "missing_routes": [
+    {
+      "method": "GET",
+      "path": "/api/questions/{qid}/usages"
+    },
+    {
+      "method": "GET",
+      "path": "/api/questions/{qid}/stats"
+    },
+    {
+      "method": "POST",
+      "path": "/api/questions"
+    },
+    {
+      "method": "POST",
+      "path": "/api/questions/{qid}/versions"
+    },
+    {
+      "method": "POST",
+      "path": "/api/questions/{qid}/restore"
+    },
+    {
+      "method": "POST",
+      "path": "/api/question-versions/{vid}/fork"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/question-versions/{vid}/shares/{uid}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/question-versions/{vid}/shares/{uid}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/question-banks"
+    },
+    {
+      "method": "POST",
+      "path": "/api/question-banks/{bid}/items"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/question-banks/{bid}/items/{qid}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/surveys/{survey_id}/question-references"
+    },
+    {
+      "method": "POST",
+      "path": "/api/surveys/{survey_id}/revisions"
+    },
+    {
+      "method": "POST",
+      "path": "/api/surveys/{survey_id}/publish"
+    },
+    {
+      "method": "GET",
+      "path": "/api/surveys/{survey_id}/stats"
+    },
+    {
+      "method": "POST",
+      "path": "/api/public/surveys/{public_token}/responses"
+    }
+  ],
+  "missing_local_links": [],
+  "full_result": "810 passed / 36 failed, 846 nodes, exit 1",
+  "full_repeated": false,
+  "runtime_code_changed": false,
+  "report_review": "已阅读并重写阶段报告；保留技术、失败、AI与中间状态说明，移除旧阶段结论和不必要的自证语言",
+  "legacy_interruption": "故障留下一个已提交版本与PREPARED操作；恢复后完成，严格无中间状态未证明"
+}

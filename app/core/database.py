@@ -23,5 +23,13 @@ def ensure_indexes(db):
     db.sessions.create_index('token_hash', unique=True)
     db.sessions.create_index('expires_at', expireAfterSeconds=0)
 
+def ensure_question_indexes(db):
+    # Lazy initialization: legacy survey-only use does not create new collections.
+    db.questions.create_index([('owner_id', 1), ('status', 1), ('_id', 1)])
+    db.question_versions.create_index([('question_id', 1), ('version_no', 1)], unique=True)
+    db.question_versions.create_index('operation_id', unique=True)
+    db.stage2_operations.create_index([('owner_id', 1), ('action', 1), ('key', 1)], unique=True)
+    db.stage2_operations.create_index([('question_id', 1), ('state', 1)])
+
 def get_db(request: Request):
     return request.app.state.db

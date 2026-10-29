@@ -1,0 +1,52 @@
+{
+  "database": "survey_test_legacy_510f0e45f05848128ce976d98259a26c",
+  "uri": "mongodb://127.0.0.1:27017",
+  "official_database_accessed": false,
+  "compatibility_read": "PASS",
+  "unmapped_positions": 2,
+  "unmapped_result": "409 legacy_mapping_required",
+  "dry_run_writes": 0,
+  "dry_run_original_unchanged": true,
+  "fault": "503 at legacy_ready",
+  "intermediate_operation": "PREPARED",
+  "intermediate_committed_versions": 1,
+  "intermediate_revision_drafts": 0,
+  "recovery": "PASS",
+  "mapped_positions": 2,
+  "distinct_family_count": 2,
+  "source_snapshot_unchanged": true,
+  "limitation": "故障后会保留已提交题目版本和PREPARED操作；恢复后完成，不是无中间状态事务。",
+  "cleanup_remaining_collections": [],
+  "unexpected_database_names": [],
+  "command_counts_by_stage": {
+    "cleanup": {
+      "dropDatabase": 1,
+      "listCollections": 1
+    },
+    "dry_run": {
+      "find": 10
+    },
+    "isolated_conversion_fault": {
+      "aggregate": 2,
+      "createIndexes": 7,
+      "find": 22,
+      "findAndModify": 1,
+      "insert": 4,
+      "update": 4
+    },
+    "isolated_recovery": {
+      "aggregate": 2,
+      "createIndexes": 5,
+      "find": 54,
+      "findAndModify": 2,
+      "insert": 5,
+      "update": 8
+    },
+    "setup": {
+      "find": 2,
+      "hello": 1,
+      "insert": 3,
+      "ping": 1
+    }
+  }
+}

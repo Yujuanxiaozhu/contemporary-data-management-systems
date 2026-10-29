@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "D:\\Codex\\survey-system\\.venv\\Scripts\\python.exe",
+    "-B",
+    "-u",
+    "D:\\Codex\\survey-system\\docs\\stage2\\slice7\\run_verification.py",
+    "--worker",
+    "full-final"
+  ],
+  "cwd": "D:\\Codex\\survey-system",
+  "exit_code": 1,
+  "elapsed_seconds": 186.687,
+  "output": "full-final.txt"
+}

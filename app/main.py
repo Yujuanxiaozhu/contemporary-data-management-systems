@@ -7,7 +7,7 @@ from fastapi.templating import Jinja2Templates
 from pymongo.errors import PyMongoError
 from app.core.config import ROOT, Settings
 from app.core.database import connect, ensure_indexes
-from app.routers import auth, management, responses, statistics, surveys
+from app.routers import auth, management, responses, statistics, surveys, question_bank, banks
 
 def create_app(settings: Settings | None = None, database=None) -> FastAPI:
     settings = settings or Settings()
@@ -32,6 +32,8 @@ def create_app(settings: Settings | None = None, database=None) -> FastAPI:
     app.include_router(responses.router)
     app.include_router(statistics.router)
     app.include_router(management.router)
+    app.include_router(question_bank.router)
+    app.include_router(banks.router)
     app.mount('/static', StaticFiles(directory=ROOT / 'app/static'), name='static')
     templates = Jinja2Templates(directory=ROOT / 'app/templates')
     @app.exception_handler(PyMongoError)

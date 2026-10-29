@@ -25,7 +25,7 @@ def parse_input(model: type[T], data: dict) -> T:
 
 
 def get_open_survey(db, token: str, user: dict | None) -> dict:
-    survey = db.surveys.find_one({'public_token': token})
+    survey = db.surveys.find_one({'public_token': token, '_revision_deleted': {'$ne': True}})
     if survey is None:
         raise HTTPException(404, '问卷不存在')
     survey = ensure_current_snapshot(db, survey)

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -8,6 +8,7 @@ from app.core.database import get_db
 from app.core.security import optional_user
 from app.schemas.survey import survey_out
 from app.services import statistics, surveys
+from app.services import question_bank
 
 router = APIRouter(include_in_schema=False)
 templates = Jinja2Templates(directory=ROOT / 'app/templates')
@@ -31,7 +32,7 @@ def login_page(request: Request):
 def dashboard(request: Request, user=Depends(optional_user), db=Depends(get_db)):
     if user is None:
         return RedirectResponse('/login', status_code=303)
-    documents = [survey_out(s) for s in db.surveys.find({'owner_id': user['_id']}).sort('created_at', -1)]
+    documents = [survey_out(s) for s in db.surveys.find({'owner_id': user['_id'], '_revision_deleted': {'$ne': True}}).sort('created_at', -1)]
     return render(request, 'dashboard.html', user, surveys=documents)
 
 
@@ -47,7 +48,30 @@ def edit_page(survey_id: str, request: Request, user=Depends(optional_user), db=
     if user is None:
         return RedirectResponse('/login', status_code=303)
     survey = surveys.get_owned(db, survey_id, user)
-    return render(request, 'edit.html', user, survey=jsonable_encoder(survey_out(survey)))
+    version_numbers = {}
+    for binding in survey.get('question_bindings', []):
+        try:
+            v = question_bank.get_version(db, str(binding['question_version_id']), user)
+            version_numbers[binding['local_question_id']] = v['version_no']
+        except HTTPException as exc:
+            if exc.status_code != 404:raise
+            version_numbers[binding['local_question_id']] = '授权已失效'
+    return render(request, 'edit.html', user, survey=jsonable_encoder(survey_out(survey)), version_numbers=version_numbers)
+
+
+@router.get('/question-bank')
+def bank_page(request: Request, user=Depends(optional_user)):
+    if user is None:
+        return RedirectResponse('/login', status_code=303)
+    return render(request, 'question_bank.html', user, family=None)
+
+
+@router.get('/question-bank/{qid}')
+def bank_detail_page(qid: str, request: Request, user=Depends(optional_user), db=Depends(get_db)):
+    if user is None:
+        return RedirectResponse('/login', status_code=303)
+    family = question_bank.visible_owned(db, qid, user)
+    return render(request, 'question_bank.html', user, family=jsonable_encoder(question_bank.family_out(db, family)))
 
 
 @router.get('/surveys/{survey_id}/stats')

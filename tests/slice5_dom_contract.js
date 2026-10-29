@@ -1,0 +1,31 @@
+// Execute the real picker against a bank and assert the fixed default version reaches binding.
+const fs=require('node:fs'),assert=require('node:assert/strict');
+let prefix=fs.readFileSync('tests/slice3_dom_contract.js','utf8').split('fixture.sequence=0;')[0];
+prefix=prefix.replace("  if(mode==='picker'){", "  if(mode==='picker'){node('#picker-bank');node('#picker-shared-enabled');");
+prefix=prefix.replace("version={question_version_id:'v1'", "version={question_id:'family',question_version_id:'v1'");
+prefix=prefix.replace("      if(path==='/api/questions/family')result=family;", `      if(path.startsWith('/api/question-banks/bank/items?'))result={items:[{question_id:'family',default_version_id:'v1',available:true,version},{question_id:'shared-family',default_version_id:'v3',available:true,version:{...version,question_id:'shared-family',question_version_id:'v3',version_no:3}}],next_cursor:null};
+      else if(path.startsWith('/api/question-banks?'))result={items:[{bank_id:'bank',name:'My bank'}],next_cursor:null};
+      else if(path.startsWith('/api/shared-question-versions?'))result={items:[{...version,question_id:'shared-family',question_version_id:'v3',version_no:3,owner_username:'owner'},{...version,question_id:'shared-family',question_version_id:'v4',version_no:4,owner_username:'owner'}],next_cursor:null};
+      else if(path.startsWith('/api/questions/family/versions'))result={items:[version,{...version,question_version_id:'v2',version_no:2}],next_cursor:null};
+      else if(path==='/api/questions/family')result=family;`);
+const box={exports:{}};new Function('require','module',prefix+'\nfixture.sequence=0;module.exports=fixture;')(require,box);
+const tick=async()=>{for(let i=0;i<12;i++)await new Promise(r=>setImmediate(r));};
+(async()=>{
+ const f=box.exports('picker');await tick();const bank=f.nodes['#picker-bank'],form=f.nodes['#bank-picker'];
+ assert.equal(bank.children[1].value,'bank');bank.value='bank';await bank.onchange();
+ assert.equal(form.elements.family.children[1].value,'bankitem:family');form.elements.family.value='bankitem:family';await form.elements.family.onchange();
+ assert.equal(form.elements.version.value,'v1');form.onsubmit({preventDefault(){}});await tick();
+ assert.equal(f.writes().length,1);assert.equal(JSON.parse(f.writes()[0].body).question_version_id,'v1');
+ const explicit=box.exports('picker');await tick();const choice=explicit.nodes['#picker-bank'],picker=explicit.nodes['#bank-picker'];
+ choice.value='bank';await choice.onchange();picker.elements.family.value='bankitem:family';await picker.elements.family.onchange();
+ assert.equal(picker.elements.version.value,'v1');assert.ok(picker.elements.version.children.some(v=>v.value==='v2'));
+ picker.elements.version.value='v2';picker.onsubmit({preventDefault(){}});await tick();
+ assert.equal(JSON.parse(explicit.writes()[0].body).question_version_id,'v2');
+ const shared=box.exports('picker');await tick();const sharedBank=shared.nodes['#picker-bank'],sharedPicker=shared.nodes['#bank-picker'];
+ sharedBank.value='bank';await sharedBank.onchange();sharedPicker.elements.family.value='bankitem:shared-family';await sharedPicker.elements.family.onchange();
+ assert.equal(sharedPicker.elements.version.value,'v3');assert.ok(sharedPicker.elements.version.children.some(v=>v.value==='v4'));
+ sharedPicker.elements.version.value='v4';sharedPicker.onsubmit({preventDefault(){}});await tick();
+ assert.equal(JSON.parse(shared.writes()[0].body).question_version_id,'v4');
+ assert.ok(!shared.calls.some(call=>call.path.startsWith('/api/questions/shared-family/versions')));
+ console.log('SLICE5_BANK_PICKER_FIXED_VERSION=PASS');
+})().catch(e=>{console.error(e);process.exitCode=1;});

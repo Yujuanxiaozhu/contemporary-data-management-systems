@@ -1,0 +1,52 @@
+{
+  "branch": "stage2-question-bank",
+  "head": "0b845575fef4863e49be1e22b20d1882c5c78f66",
+  "stage1_final": "96f1a39ff6b8e852df3f58b64c300ebaac5fbcb9",
+  "staged": [],
+  "preexisting_files": 1634,
+  "changed": {
+    "docs/ai-log.md": {
+      "before": "9847cb7ca86ab702255bf4d08b0f7841e0d453628ec6b3153c5dbc00784e8f29",
+      "after": "38812fd8c6494e728511684b3b7bb45a2deb231cc2c6233a5d1b6f374e650efc",
+      "allowed": true
+    },
+    "docs/api.md": {
+      "before": "746828bdaff74bc3ae2d2dac1f7af3c220309e1838f050652329d882503e2ea5",
+      "after": "ca37f6bf3543478eda1919c78c71e27d3c3ba5f1ffb019da939cef14848ec435",
+      "allowed": true
+    },
+    "docs/architecture.md": {
+      "before": "7432b1bf44d23e6a1e1c3ccb1dcc8bf9b8ebe509d3186316525a5cb09d25bc13",
+      "after": "a5b09ec9310e5e4bd10162d617c39bad3aa9cd4475423209df4fc6b5ae26b274",
+      "allowed": true
+    },
+    "docs/database-design.md": {
+      "before": "5d1407d0db9b452063bdad24d6406157060b1c329c113455c5f523cdc256fffa",
+      "after": "3771c31459c0067a3fe6610a4791178919a78a6c9533a39102991b8aef413263",
+      "allowed": true
+    },
+    "docs/project-report.md": {
+      "before": "92426d00c16db19978002596e48cae110db63ff8574291dfd13d72e53e2a6c53",
+      "after": "9fd7594de524077fc19da225638f58ef48b8091092d322806b8d37697e3666f0",
+      "allowed": true
+    },
+    "docs/testing.md": {
+      "before": "7d519f0bfaf2c8719b454fa2092abc49c093576fa1bad4234b2fa31cd1da47c9",
+      "after": "60abc8832afc83050a39c6798d1efe46e9cf1ddd185fd3aa77448c0fc2c0de4e",
+      "allowed": true
+    },
+    "docs/stage2/README.md": {
+      "before": "b9c0076d912093989c2f189431536343a944707f9d54a6924fd4c708570da348",
+      "after": "d62d72c0e9cab323fbd3cd5f184b18c8e4c862b0fa00be5cc6bdb1a182b6a650",
+      "allowed": true
+    },
+    "README.md": {
+      "before": "a9fd175edea3ca2a104013756254467bc0cd79a25c6c8c9ea78cf91253bef45f",
+      "after": "e79fe65ed2765762f2cc686dadf94feb5a7dea0685d89677b114fa82acb7b61b",
+      "allowed": true
+    }
+  },
+  "missing": [],
+  "unexpected_changes": [],
+  "app_tests_scripts_changed": []
+}

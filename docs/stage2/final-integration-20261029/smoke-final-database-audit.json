@@ -1,0 +1,18 @@
+{
+  "databases": [
+    "survey_test_smoke_c887d309590b4c67875287463a5aa47a"
+  ],
+  "unexpected": [],
+  "commands": [
+    {
+      "database": "admin",
+      "command": "endSessions",
+      "count": 1
+    },
+    {
+      "database": "survey_test_smoke_c887d309590b4c67875287463a5aa47a",
+      "command": "dropDatabase",
+      "count": 1
+    }
+  ]
+}

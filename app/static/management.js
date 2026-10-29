@@ -1,7 +1,7 @@
 const $=selector=>document.querySelector(selector);
 function message(error){$('#message').textContent=typeof error==='string'?error:error.message;}
-async function api(path,method='GET',data){
-  const response=await fetch(path,{method,headers:data?{'Content-Type':'application/json'}:{},body:data?JSON.stringify(data):undefined});
+async function api(path,method='GET',data,headers={}){
+  const response=await fetch(path,{method,headers:{...(data?{'Content-Type':'application/json'}:{}),...headers},body:data?JSON.stringify(data):undefined});
   if(response.status===204)return null;
   const body=await response.json();
   if(!response.ok)throw new Error(typeof body.detail==='string'?body.detail:JSON.stringify(body.detail));
@@ -53,7 +53,8 @@ if(qform){showType();qform.elements.type.onchange=showType;
     if(type.includes('choice'))data.options=f.options.value.split('\n').filter(line=>line.trim()).map(line=>{const split=line.indexOf('|');if(split<0)throw new Error('每个选项请按 id|文字 填写');return{id:line.slice(0,split).trim(),label:line.slice(split+1).trim()};});
     for(const key of rulesByType[type])if(f[key].value!=='')data.validation[key]=Number(f[key].value);
     if(type==='number')data.validation.integer_only=f.integer_only.checked;
-    await api('/api/surveys/'+survey.id+'/questions'+(editingQuestion?'/'+editingQuestion:''),editingQuestion?'PUT':'POST',data);location.reload();
+    if(editingQuestion && f.new_family?.checked)data.new_family=true;
+    await intentApi('/api/surveys/'+survey.id+'/questions'+(editingQuestion?'/'+editingQuestion:''),editingQuestion?'PUT':'POST',data);location.reload();
   });};
 }
 for(const button of document.querySelectorAll('[data-delete-question]'))button.onclick=()=>run(async()=>{if(!confirm('确认删除该题？'))return;await api('/api/surveys/'+survey.id+'/questions/'+button.dataset.deleteQuestion,'DELETE');location.reload();});

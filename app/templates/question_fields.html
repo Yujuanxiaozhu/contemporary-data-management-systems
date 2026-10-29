@@ -1,0 +1,7 @@
+<label>标题<input name="title" required maxlength="500"></label>
+<label>题型<select name="type"><option>single_choice</option><option>multiple_choice</option><option>text</option><option>number</option></select></label>
+<label><input name="required" type="checkbox">默认必答</label>
+<label data-for="single_choice multiple_choice">选项（每行 id|文字）<textarea name="options" rows="4"></textarea></label>
+<fieldset data-for="multiple_choice"><legend>多选限制</legend><label>至少选<input name="min_selections" type="number" step="1"></label><label>最多选<input name="max_selections" type="number" step="1"></label><label>恰好选<input name="exact_selections" type="number" step="1"></label></fieldset>
+<fieldset data-for="text"><legend>文本长度</legend><label>最少字数<input name="min_length" type="number" step="1"></label><label>最多字数<input name="max_length" type="number" step="1"></label></fieldset>
+<fieldset data-for="number"><legend>数字范围</legend><label>最小值<input name="min" type="number" step="any"></label><label>最大值<input name="max" type="number" step="any"></label><label><input name="integer_only" type="checkbox">仅整数</label></fieldset>

@@ -1,0 +1,52 @@
+INFO:     Started server process [57192]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:50062 (Press CTRL+C to quit)
+INFO:     127.0.0.1:50079 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "GET /static/app.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "POST /api/auth/register HTTP/1.1" 201 Created
+INFO:     127.0.0.1:50079 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "POST /api/surveys HTTP/1.1" 201 Created
+INFO:     127.0.0.1:50079 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "POST /api/questions HTTP/1.1" 201 Created
+INFO:     127.0.0.1:50079 - "POST /api/questions/6ae33a744bf4540528003cc9/versions HTTP/1.1" 201 Created
+INFO:     127.0.0.1:50079 - "POST /api/surveys/6ae33a744bf4540528003cc7/question-references HTTP/1.1" 201 Created
+INFO:     127.0.0.1:50079 - "POST /api/surveys/6ae33a744bf4540528003cc7/question-references HTTP/1.1" 201 Created
+INFO:     127.0.0.1:50079 - "POST /api/surveys/6ae33a744bf4540528003cc7/publish HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "GET /api/surveys/6ae33a744bf4540528003cc7/versions/3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "POST /api/public/surveys/[PUBLIC_TOKEN_REDACTED]/responses HTTP/1.1" 201 Created
+INFO:     127.0.0.1:50083 - "POST /api/auth/register HTTP/1.1" 201 Created
+INFO:     127.0.0.1:50083 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50083 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "PUT /api/question-versions/6ae33a744bf4540528003cca/shares/6ae33a744bf4540528003cd1 HTTP/1.1" 201 Created
+INFO:     127.0.0.1:50083 - "GET /api/question-versions/6ae33a744bf4540528003cca HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50083 - "POST /api/question-banks HTTP/1.1" 201 Created
+INFO:     127.0.0.1:50083 - "POST /api/question-banks/6ae33a744bf4540528003cd4/items HTTP/1.1" 201 Created
+INFO:     127.0.0.1:50083 - "GET /api/question-banks/6ae33a744bf4540528003cd4/items HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50083 - "POST /api/surveys HTTP/1.1" 201 Created
+INFO:     127.0.0.1:50083 - "POST /api/surveys/6ae33a744bf4540528003cd6/question-references HTTP/1.1" 201 Created
+INFO:     127.0.0.1:50083 - "POST /api/surveys/6ae33a744bf4540528003cd6/publish HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50083 - "POST /api/public/surveys/[PUBLIC_TOKEN_REDACTED]/responses HTTP/1.1" 201 Created
+INFO:     127.0.0.1:50079 - "GET /api/questions/6ae33a744bf4540528003cc9/usages HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "GET /api/questions/6ae33a744bf4540528003cc9/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50083 - "GET /api/questions/6ae33a744bf4540528003cc9/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "GET /api/surveys/6ae33a744bf4540528003cd6 HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50079 - "GET /api/surveys/6ae33a744bf4540528003cd6/stats HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50083 - "GET /api/surveys/6ae33a744bf4540528003cc7/stats HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50079 - "DELETE /api/question-versions/6ae33a744bf4540528003cca/shares/6ae33a744bf4540528003cd1 HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:50083 - "GET /api/question-versions/6ae33a744bf4540528003cca HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50083 - "GET /api/questions/6ae33a744bf4540528003cc9/stats HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50083 - "GET /api/question-banks/6ae33a744bf4540528003cd4/items HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50083 - "POST /api/surveys HTTP/1.1" 201 Created
+INFO:     127.0.0.1:50083 - "POST /api/surveys/6ae33a784bf4540528003cd9/question-references HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50083 - "GET /api/surveys/6ae33a744bf4540528003cd6/stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "GET /api/surveys/6ae33a744bf4540528003cc7/versions/3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "GET /question-bank HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "GET /surveys/6ae33a744bf4540528003cc7/edit HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "POST /api/surveys/6ae33a744bf4540528003cc7/publish HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "POST /api/surveys/6ae33a744bf4540528003cc7/close HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50079 - "POST /api/auth/logout HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:50079 - "GET /api/surveys HTTP/1.1" 401 Unauthorized

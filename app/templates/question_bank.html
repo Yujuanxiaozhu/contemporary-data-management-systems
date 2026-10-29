@@ -1,0 +1,25 @@
+{% extends 'base.html' %}{% block content %}
+<h1>我的题库{% if family %} · {{ family.title }}{% endif %}</h1>
+<p>本人题目和分享给我的指定版本分别显示。内容修改会创建新版本，不会改变已有问卷的固定绑定。</p>
+{% if not family %}
+<section id="bank-organizer"><h2>题库</h2>
+<form id="bank-create"><label>题库名称<input name="name" maxlength="100" required></label><label>说明<input name="description" maxlength="1000"></label><button type="submit">创建题库</button></form>
+<label>打开题库<select id="bank-select"><option value="">请选择题库</option></select></label>
+<button type="button" id="bank-rename">修改名称</button><button type="button" id="bank-delete">删除题库</button>
+<p id="bank-organizer-status" role="status"></p><ul id="bank-items"></ul>
+<label>添加题目版本<select id="bank-add-version"><option value="">请选择版本</option></select></label><button type="button" id="bank-add">添加到题库</button>
+<p>默认版本只影响以后选题，不改变已有问卷；失效的共享题可手动移除。</p></section>
+<label>搜索题名<input id="bank-search" type="search"></label><button id="bank-refresh" type="button">重新加载</button>
+<section><h2>分享给我的题目版本</h2><p id="shared-status" role="status"></p><ul id="shared-questions"></ul><pre id="shared-stats"></pre></section>
+<p id="bank-status" role="status">正在加载题目…</p>
+<table><thead><tr><th>题目</th><th>题型</th><th>最新版</th><th>版本数</th><th>更新时间</th></tr></thead><tbody id="bank-list"></tbody></table>
+{% else %}
+<span id="share-controls-enabled" hidden></span><p id="bank-status" role="status">正在加载版本…</p><h2>版本历史</h2><div id="version-history"></div>
+<section><h2>本人问卷中的回答统计</h2><button type="button" id="question-stats-load">查看跨问卷统计</button><pre id="question-stats-result"></pre></section>
+<p>恢复旧版会创建一个新版本，并记录 restored_from；旧版本及已有问卷不变。</p>
+{% endif %}
+<form id="bank-question-form"><h2 id="bank-form-title">{{ '更新现有题目（创建新版本）' if family else '创建新题目族' }}</h2>
+{% include 'question_fields.html' %}<button type="submit">{{ '创建新版本' if family else '创建题目族和首个版本' }}</button></form>
+{% if family %}<p><a href="/question-bank">返回列表 / 创建新的题目族</a></p>{% endif %}
+<script id="family-data" type="application/json">{{ family | tojson }}</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+[
+  {
+    "argv": [
+      "D:\\Codex\\survey-system\\.venv\\Scripts\\python.exe",
+      "-m",
+      "uvicorn",
+      "app.main:app",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "50062"
+    ],
+    "database": "survey_test_smoke_c887d309590b4c67875287463a5aa47a",
+    "uri": "loopback:27017",
+    "cwd": "D:\\Codex\\survey-system"
+  },
+  {
+    "argv": [
+      "D:\\Codex\\survey-system\\.venv\\Scripts\\python.exe",
+      "-B",
+      "D:\\Codex\\survey-system\\scripts\\rebuild_question_usages.py",
+      "--uri",
+      "mongodb://127.0.0.1:27017",
+      "--database",
+      "survey_test_smoke_c887d309590b4c67875287463a5aa47a",
+      "--owner-id",
+      "6ae33a744bf4540528003cc5",
+      "--scope",
+      "all",
+      "--apply"
+    ],
+    "database": "survey_test_smoke_c887d309590b4c67875287463a5aa47a",
+    "uri": "loopback:27017",
+    "cwd": "D:\\Codex\\survey-system"
+  },
+  {
+    "argv": [
+      "D:\\Codex\\survey-system\\.venv\\Scripts\\python.exe",
+      "-B",
+      "D:\\Codex\\survey-system\\scripts\\rebuild_question_usages.py",
+      "--uri",
+      "mongodb://127.0.0.1:27017",
+      "--database",
+      "survey_test_smoke_c887d309590b4c67875287463a5aa47a",
+      "--owner-id",
+      "6ae33a744bf4540528003cd1",
+      "--scope",
+      "all",
+      "--apply"
+    ],
+    "database": "survey_test_smoke_c887d309590b4c67875287463a5aa47a",
+    "uri": "loopback:27017",
+    "cwd": "D:\\Codex\\survey-system"
+  }
+]
